@@ -20,10 +20,10 @@ class Rectgame:
 		self.__players[0].data.append(CATCH)
 		self.__players[1].data.append(RUN)
 
-		self.__players[0].data.append(random.randint(1,WIDTH-1))
-		self.__players[0].data.append(random.randint(1,HEIGHT-1))
-		self.__players[1].data.append(random.randint(1,WIDTH-1))
-		self.__players[1].data.append(random.randint(1,HEIGHT-1))
+		self.__players[0].data.append(random.randint(1,WIDTH-2))
+		self.__players[0].data.append(random.randint(1,HEIGHT-2))
+		self.__players[1].data.append(random.randint(1,WIDTH-2))
+		self.__players[1].data.append(random.randint(1,HEIGHT-2))
 	def render(self, activePlayer):
 		field=list()
 
@@ -46,7 +46,7 @@ class Rectgame:
 			print("".join(line))
 
 	def run(self):
-		while not ((self.__players[0].data[1] == self.__players[1].data[1]) and (self.__players[0].data[2]) == (self.__players[1].data[2])):
+		while True:
 			for player in self.__players:
 				self.render(player)
 				plan = player.act()
@@ -59,5 +59,12 @@ class Rectgame:
 					player.data[2] -= 1
 				elif plan[1] == 1 and player.data[2] < HEIGHT-2:
 					player.data[2] += 1
+
+				if (self.__players[0].data[1] == self.__players[1].data[1]) and (self.__players[0].data[2]) == (self.__players[1].data[2]):
+					self.__players[0].assess(100)
+					self.__players[1].assess(-100)
+					print("The game is over")
+					return
+			self.__players[1].assess(1)
+			self.__players[0].assess(-1)
 			input("Press any key to continue")
-		print("The game is over")

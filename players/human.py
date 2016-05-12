@@ -6,3 +6,6 @@ class Human:
 
 	def act(gameinfo):
 		return eval(input(">> "))
+
+	def assess(self, value):
+		pass
