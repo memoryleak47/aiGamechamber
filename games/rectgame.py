@@ -24,7 +24,7 @@ class Rectgame:
 		self.__players[0].data.append(random.randint(1,HEIGHT-1))
 		self.__players[1].data.append(random.randint(1,WIDTH-1))
 		self.__players[1].data.append(random.randint(1,HEIGHT-1))
-	def render(self):
+	def render(self, activePlayer):
 		field=list()
 
 		field.append(list("#"*WIDTH))
@@ -33,17 +33,22 @@ class Rectgame:
 		field.append(list("#"*WIDTH))
 
 		for player in self.__players:
+			
 			if player.data[0] == CATCH:
-				field[player.data[2]][player.data[1]] = "C"
+				char = "c"
 			elif player.data[0] == RUN:
-				field[player.data[2]][player.data[1]] = "R"
+				char = "r"
+			if player == activePlayer:
+				char = char.upper()
+			field[player.data[2]][player.data[1]] = char
+
 		for line in field:
 			print("".join(line))
 
 	def run(self):
 		while not ((self.__players[0].data[1] == self.__players[1].data[1]) and (self.__players[0].data[2]) == (self.__players[1].data[2])):
 			for player in self.__players:
-				self.render()
+				self.render(player)
 				plan = player.act()
 				if plan[0] == -1 and player.data[1] > 1:
 					player.data[1] -= 1
