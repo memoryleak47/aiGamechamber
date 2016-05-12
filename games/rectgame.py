@@ -33,5 +33,19 @@ class Rectgame:
 				field[player.data[1]][player.data[2]] = "R"
 		for line in field:
 			print("".join(line))
+
 	def run(self):
-		self.render()
+		while True:
+			for player in self.__players:
+				self.render()
+				plan = player.act()
+				if plan[0] == -1:
+					player.data[1] -= 1
+				elif plan[0] == 1:
+					player.data[1] += 1
+
+				if plan[1] == -1:
+					player.data[2] -= 1
+				elif plan[1] == 1:
+					player.data[2] += 1
+			input("Press any key to continue")
