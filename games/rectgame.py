@@ -17,6 +17,9 @@ class Rectgame:
 	def run(self, players):
 		self.__players = players
 
+		self.__players[0].data = []
+		self.__players[1].data = []
+
 		self.__players[0].data.append(random.randint(1,WIDTH-2))
 		self.__players[0].data.append(random.randint(1,HEIGHT-2))
 		self.__players[1].data.append(random.randint(1,WIDTH-2))
@@ -44,7 +47,6 @@ class Rectgame:
 					return
 			self.__players[1].assess(1)
 			self.__players[0].assess(-1)
-			input("Press any key to continue")
 
 	def render(self, activePlayer):
 		field=list()

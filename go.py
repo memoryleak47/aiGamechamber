@@ -11,6 +11,7 @@ import rectgame
 import human
 import tryhard 
 
+"""
 noplayers = int(input("Number of players\n>> "))
 
 gamestr = input("Enter Game\n>> ")
@@ -20,4 +21,11 @@ players=list()
 for i in range(noplayers):
 	playerstr = input("Enter player\n>> ").strip()
 	eval("players.append(" + playerstr.lower() + "." + playerstr[0].upper() + playerstr[1:].lower() + "(game.getNoInput(), game.getNoOutput()))")
-game.run(players)
+
+while True:
+	game.run(players)
+"""
+game = rectgame.Rectgame(2)
+players=[tryhard.Tryhard(game.getNoInput(), game.getNoOutput()), tryhard.Tryhard(game.getNoInput(), game.getNoOutput())]
+while True:
+	game.run(players)
