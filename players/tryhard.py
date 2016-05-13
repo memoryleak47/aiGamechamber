@@ -7,9 +7,9 @@ MIN = -10
 NOIDEAS = 3
 MIN_COMPLEXITY = 0
 MAX_COMPLEXITY = 3
-SURRENDERSUCCESS = -400
+SURRENDERSUCCESS = -50
 
-operators = ["max($,$)", "min($,$)", "($+$)", "($-$)", "(float($)/float($))", "($*$)"]
+operators = ["(-$)", "max($,$)", "min($,$)", "($+$)", "($-$)", "(float($)/float($))", "($*$)"]
 
 class Idea:
 	def __init__(self, func):
@@ -61,7 +61,6 @@ class Tryhard:
 		self.addRandomIdea()
 
 	def act(self, gameinfo):
-		print("func=" + self.__ideas[0].func)
 		return eval(self.__ideas[0].func)
 
 	def assess(self, value):
@@ -77,7 +76,6 @@ class Tryhard:
 		self.__ideas.append(Idea.getRandomIdea(self.noInput, self.noOutput))
 
 	def updateIdeas(self):
-		print("ideas are now updated")
 		self.__success = 0
 		activeIdea = self.__ideas[0]
 		if activeIdea.success < MIN: # the idea was pretty bad

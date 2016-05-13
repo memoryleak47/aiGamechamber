@@ -2,6 +2,7 @@
 
 import random
 import sys
+import time
 
 WIDTH=30
 HEIGHT=30
@@ -45,8 +46,9 @@ class Rectgame:
 					self.__players[1].gameOver()
 					print("Game Over")
 					return
-			self.__players[1].assess(1)
 			self.__players[0].assess(-1)
+			self.__players[1].assess(1)
+			time.sleep(0.05)
 
 	def render(self, activePlayer):
 		field=list()
