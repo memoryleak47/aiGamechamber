@@ -5,11 +5,13 @@ import random
 STARTVALUE = 0
 MIN = -10
 NOIDEAS = 3
+MIN_COMPLEXITY = 0
+MAX_COMPLEXITY = 0
 
 operators = ["max($,$)", "min($,$)", "($+$)", "($-$)", "(float($)/float($))", "($*$)"]
 
 class Idea:
-	def __init__(self, func, noinfos):
+	def __init__(self, func):
 		self.func = func
 		self.success = STARTVALUE
 
@@ -17,11 +19,34 @@ class Idea:
 		self.success += value
 
 	def pseudoClone(self):
-		pass
+		print("TODO pseudoClone")
+		return self # TODO
 
 	@staticmethod
 	def getRandomIdea(noinfos):
-		pass
+		func = "$" + (",$" * (noinfos - 1))
+		for i in range(random.randint(MIN_COMPLEXITY, MAX_COMPLEXITY)):
+
+			# load spots
+			spots=list()
+			for spot in len(func):
+				if func[spot] == "$":
+					spots.append(spot)
+
+			# find chosenspot
+			chosenspot = spots[random.randint(0, len(spots)-1)]
+
+			# find chosenoperator
+			chosenoperator = operators[random.randint(0,len(operators)-1)]
+
+			# insert
+			func = func[:chosenspot] + chosenoperator + func[chosenspot+1:]
+
+		while "$" in func:
+			spot = func.find("$")
+			func = func[:spot] + "gameinfo[" + str(random.randint(0, noinfos)) + "]" + func[spot+1:]
+
+		return Idea(func)
 
 
 class Tryhard:
