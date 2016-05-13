@@ -30,9 +30,9 @@ class Tryhard:
 		self.data = list() # TODO remove
 		self.__ideas = list()
 
-		self.__ideas.append(Idea.getRandomIdea())
+		self.addRandomIdea()
 
-	def act(gameinfo):
+	def act(self, gameinfo):
 		return eval(self.__ideas[0].func)
 
 	def assess(self, value):
@@ -43,6 +43,9 @@ class Tryhard:
 		if activeIdea.success < MIN: # the idea was pretty bad
 			self.__ideas.remove(activeIdea) # try something completely new
 			if len(self.__ideas) < NOIDEAS:
-				self.__ideas.append(Idea.getRandomIdea())
+				self.addRandomIdea()
 		else: # it was ok
 			self.__ideas.insert(0, sorted(self.__ideas, key=success)[0].pseudoClone()) # clone it
+
+	def addRandomIdea(self):
+		self.__ideas.append(Idea.getRandomIdea(self.noinfos))

@@ -11,13 +11,13 @@ import rectgame
 import human
 import tryhard 
 
-players=list()
-while True:
-	playerstr = input("Enter player\n>> ").strip()
-	if playerstr == "":
-		break
-	else:
-		eval("players.append(" + playerstr.lower() + "." + playerstr[0].upper() + playerstr[1:].lower() + "())")
+noplayers = int(input("Number of players\n>> "))
 
 gamestr = input("Enter Game\n>> ")
-eval(gamestr.lower() + "." + gamestr[0].upper() + gamestr[1:].lower() + "(players).run()")
+game = eval(gamestr.lower() + "." + gamestr[0].upper() + gamestr[1:].lower() + "(noplayers)")
+
+players=list()
+for i in range(noplayers):
+	playerstr = input("Enter player\n>> ").strip()
+	eval("players.append(" + playerstr.lower() + "." + playerstr[0].upper() + playerstr[1:].lower() + "(game.getNoInfos()))")
+game.run(players)
