@@ -6,7 +6,7 @@ STARTVALUE = 0
 MIN = -10
 NOIDEAS = 3
 MIN_COMPLEXITY = 0
-MAX_COMPLEXITY = 0
+MAX_COMPLEXITY = 3
 
 operators = ["max($,$)", "min($,$)", "($+$)", "($-$)", "(float($)/float($))", "($*$)"]
 
@@ -29,7 +29,7 @@ class Idea:
 
 			# load spots
 			spots=list()
-			for spot in len(func):
+			for spot in range(len(func)):
 				if func[spot] == "$":
 					spots.append(spot)
 
@@ -44,7 +44,7 @@ class Idea:
 
 		while "$" in func:
 			spot = func.find("$")
-			func = func[:spot] + "gameinfo[" + str(random.randint(0, noInput)) + "]" + func[spot+1:]
+			func = func[:spot] + "gameinfo[" + str(random.randint(0, noInput-1)) + "]" + func[spot+1:]
 
 		return Idea(func)
 
@@ -59,7 +59,7 @@ class Tryhard:
 		self.addRandomIdea()
 
 	def act(self, gameinfo):
-		print(self.__ideas[0].func)
+		print("func=" + self.__ideas[0].func)
 		return eval(self.__ideas[0].func)
 
 	def assess(self, value):
