@@ -9,6 +9,7 @@ sys.path.append(sys.path[0] + "/players")
 import rectgame
 
 import human
+import tryhard 
 
 players=list()
 while True:

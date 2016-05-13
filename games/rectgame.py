@@ -63,7 +63,9 @@ class Rectgame:
 				if (self.__players[0].data[1] == self.__players[1].data[1]) and (self.__players[0].data[2]) == (self.__players[1].data[2]):
 					self.__players[0].assess(100)
 					self.__players[1].assess(-100)
-					print("The game is over")
+					self.__players[0].gameOver()
+					self.__players[1].gameOver()
+					print("Game Over")
 					return
 			self.__players[1].assess(1)
 			self.__players[0].assess(-1)
