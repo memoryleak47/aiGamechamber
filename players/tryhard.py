@@ -7,6 +7,7 @@ MIN = -10
 NOIDEAS = 3
 MIN_COMPLEXITY = 0
 MAX_COMPLEXITY = 3
+SURRENDERSUCCESS = -400
 
 operators = ["max($,$)", "min($,$)", "($+$)", "($-$)", "(float($)/float($))", "($*$)"]
 
@@ -55,6 +56,7 @@ class Tryhard:
 		self.noOutput = noOutput
 		self.data = list() # TODO remove
 		self.__ideas = list()
+		self.__success = 0
 
 		self.addRandomIdea()
 
@@ -63,9 +65,20 @@ class Tryhard:
 		return eval(self.__ideas[0].func)
 
 	def assess(self, value):
+		self.__success += value
 		self.__ideas[0].assess(value)
+		if self.__success < SURRENDERSUCCESS:
+			self.updateIdeas()
 
 	def gameOver(self):
+		self.updateIdeas()
+
+	def addRandomIdea(self):
+		self.__ideas.append(Idea.getRandomIdea(self.noInput, self.noOutput))
+
+	def updateIdeas(self):
+		print("ideas are now updated")
+		self.__success = 0
 		activeIdea = self.__ideas[0]
 		if activeIdea.success < MIN: # the idea was pretty bad
 			self.__ideas.remove(activeIdea) # try something completely new
@@ -73,6 +86,3 @@ class Tryhard:
 				self.addRandomIdea()
 		else: # it was ok
 			self.__ideas.insert(0, sorted(self.__ideas, key=lambda idea: idea.success)[0].pseudoClone()) # clone it
-
-	def addRandomIdea(self):
-		self.__ideas.append(Idea.getRandomIdea(self.noInput, self.noOutput))
