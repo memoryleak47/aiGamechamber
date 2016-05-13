@@ -72,7 +72,7 @@ class Tryhard:
 			if len(self.__ideas) < NOIDEAS:
 				self.addRandomIdea()
 		else: # it was ok
-			self.__ideas.insert(0, sorted(self.__ideas, key=success)[0].pseudoClone()) # clone it
+			self.__ideas.insert(0, sorted(self.__ideas, key=lambda idea: idea.success)[0].pseudoClone()) # clone it
 
 	def addRandomIdea(self):
 		self.__ideas.append(Idea.getRandomIdea(self.noInput, self.noOutput))
