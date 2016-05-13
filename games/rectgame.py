@@ -25,14 +25,14 @@ class Rectgame:
 			for player in self.__players:
 				self.render(player)
 				plan = player.act(self.__players[0].data + self.__players[1].data)
-				if plan[0] == -1 and player.data[0] > 1:
+				if plan[0] < 0 and player.data[0] > 1:
 					player.data[0] -= 1
-				elif plan[0] == 1 and player.data[0] < WIDTH-2:
+				elif plan[0] > 0 and player.data[0] < WIDTH-2:
 					player.data[0] += 1
 
-				if plan[1] == -1 and player.data[1] > 1:
+				if plan[1] < 0 and player.data[1] > 1:
 					player.data[1] -= 1
-				elif plan[1] == 1 and player.data[1] < HEIGHT-2:
+				elif plan[1] > 0 and player.data[1] < HEIGHT-2:
 					player.data[1] += 1
 
 				if (self.__players[0].data[0] == self.__players[1].data[0]) and (self.__players[0].data[1]) == (self.__players[1].data[1]):
