@@ -67,5 +67,8 @@ class Rectgame:
 		for line in field:
 			print("".join(line))
 
-	def getNoInfos(self):
+	def getNoInput(self):
 		return self.noplayers * 2
+
+	def getNoOutput(self):
+		return 2

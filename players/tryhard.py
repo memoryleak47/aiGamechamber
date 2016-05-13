@@ -23,8 +23,8 @@ class Idea:
 		return self # TODO
 
 	@staticmethod
-	def getRandomIdea(noinfos):
-		func = "$" + (",$" * (noinfos - 1))
+	def getRandomIdea(noInput, noOutput):
+		func = "$" + (",$" * (noOutput - 1))
 		for i in range(random.randint(MIN_COMPLEXITY, MAX_COMPLEXITY)):
 
 			# load spots
@@ -44,20 +44,22 @@ class Idea:
 
 		while "$" in func:
 			spot = func.find("$")
-			func = func[:spot] + "gameinfo[" + str(random.randint(0, noinfos)) + "]" + func[spot+1:]
+			func = func[:spot] + "gameinfo[" + str(random.randint(0, noInput)) + "]" + func[spot+1:]
 
 		return Idea(func)
 
 
 class Tryhard:
-	def __init__(self, noinfos):
-		self.noinfos = noinfos # number of infos
+	def __init__(self, noInput, noOutput):
+		self.noInput = noInput
+		self.noOutput = noOutput
 		self.data = list() # TODO remove
 		self.__ideas = list()
 
 		self.addRandomIdea()
 
 	def act(self, gameinfo):
+		print(self.__ideas[0].func)
 		return eval(self.__ideas[0].func)
 
 	def assess(self, value):
@@ -73,4 +75,4 @@ class Tryhard:
 			self.__ideas.insert(0, sorted(self.__ideas, key=success)[0].pseudoClone()) # clone it
 
 	def addRandomIdea(self):
-		self.__ideas.append(Idea.getRandomIdea(self.noinfos))
+		self.__ideas.append(Idea.getRandomIdea(self.noInput, self.noOutput))

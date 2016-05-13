@@ -19,5 +19,5 @@ game = eval(gamestr.lower() + "." + gamestr[0].upper() + gamestr[1:].lower() + "
 players=list()
 for i in range(noplayers):
 	playerstr = input("Enter player\n>> ").strip()
-	eval("players.append(" + playerstr.lower() + "." + playerstr[0].upper() + playerstr[1:].lower() + "(game.getNoInfos()))")
+	eval("players.append(" + playerstr.lower() + "." + playerstr[0].upper() + playerstr[1:].lower() + "(game.getNoInput(), game.getNoOutput()))")
 game.run(players)
