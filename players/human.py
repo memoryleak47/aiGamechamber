@@ -2,7 +2,7 @@
 
 class Human:
 	def __init__(self, noInput, noOutput):
-		self.data = list()
+		pass
 
 	def act(self, gameinfo):
 		return eval(input(">> "))
