@@ -1,15 +1,14 @@
 #!/usr/bin/python3 -B
 
 import random
+import sys
+import os
+sys.path.append(os.path.dirname(sys.path[0]))
+from mathcore import *
 
-STARTVALUE = 0
 MIN = -10
 NOIDEAS = 3
-MIN_COMPLEXITY = 0
-MAX_COMPLEXITY = 3
 SURRENDERSUCCESS = -50
-
-operators = ["(-$)", "max($,$)", "min($,$)", "($+$)", "($-$)", "(float($)/float($))", "($*$)"]
 
 class Tryhard:
 	def __init__(self, noInput, noOutput):
@@ -21,7 +20,7 @@ class Tryhard:
 		self.addRandomIdea()
 
 	def act(self, gameinfo):
-		return eval(self.__ideas[0].func)
+		return self.__ideas[0].func.call(gameinfo)
 
 	def assess(self, value):
 		self.__success += value
@@ -48,7 +47,7 @@ class Tryhard:
 class Idea:
 	def __init__(self, func):
 		self.func = func
-		self.success = STARTVALUE
+		self.success = 0
 
 	def assess(self, value):
 		self.success += value
@@ -59,27 +58,5 @@ class Idea:
 
 	@staticmethod
 	def getRandomIdea(noInput, noOutput):
-		func = "$" + (",$" * (noOutput - 1))
-		for i in range(random.randint(MIN_COMPLEXITY, MAX_COMPLEXITY)):
-
-			# load spots
-			spots=list()
-			for spot in range(len(func)):
-				if func[spot] == "$":
-					spots.append(spot)
-
-			# find chosenspot
-			chosenspot = spots[random.randint(0, len(spots)-1)]
-
-			# find chosenoperator
-			chosenoperator = operators[random.randint(0,len(operators)-1)]
-
-			# insert
-			func = func[:chosenspot] + chosenoperator + func[chosenspot+1:]
-
-		while "$" in func:
-			spot = func.find("$")
-			func = func[:spot] + "gameinfo[" + str(random.randint(0, noInput-1)) + "]" + func[spot+1:]
-
-		return Idea(func)
+		return Idea(MultiFunc.getRandom(noInput, noOutput))
 
