@@ -16,6 +16,12 @@ class MultiFunc(Func):
 	def __init__(self, funcs):
 		self.funcs = funcs
 
+	def toString(self):
+		s = ""
+		for func in self.funcs:
+			s += func.toString() + ", "
+		return s.strip(", ")
+
 	@staticmethod
 	def getByStrings(strings):
 		funcs = list()
@@ -41,6 +47,9 @@ class SingleFunc(Func):
 		if not isinstance(string, str):
 			die("SingleFunc(string): (" + str(string) + ")is not a string")
 		self.string = string
+
+	def toString(self):
+		return self.string
 
 	def call(self, args):
 		result = -1
