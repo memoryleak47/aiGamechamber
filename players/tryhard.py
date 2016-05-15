@@ -15,7 +15,6 @@ class Tryhard:
 		self.noInput = noInput
 		self.noOutput = noOutput
 		self.__ideas = list()
-		self.__success = 0
 
 		self.addRandomIdea()
 
@@ -23,10 +22,9 @@ class Tryhard:
 		return self.__ideas[0].func.call(gameinfo)
 
 	def assess(self, value):
-		self.__success += value
 		self.__ideas[0].assess(value)
-		if self.__success < SURRENDERSUCCESS:
-			self.updateIdeas()
+		if self.__ideas[0].success < SURRENDERSUCCESS:
+			self.throwAwayActiveIdea()
 
 	def gameOver(self):
 		self.updateIdeas()
@@ -35,14 +33,19 @@ class Tryhard:
 		self.__ideas.append(Idea.getRandomIdea(self.noInput, self.noOutput))
 
 	def updateIdeas(self):
-		self.__success = 0
-		activeIdea = self.__ideas[0]
-		if activeIdea.success < MIN: # the idea was pretty bad
-			self.__ideas.remove(activeIdea) # try something completely new
-			if len(self.__ideas) < NOIDEAS:
-				self.addRandomIdea()
+		if self.__ideas[0].success < MIN: # the idea was pretty bad
+			self.throwAwayActiveIdea()
 		else: # it was ok
-			self.__ideas.insert(0, sorted(self.__ideas, key=lambda idea: idea.success)[0].pseudoClone()) # clone it
+			self.cloneActiveIdea()
+
+	def throwAwayActiveIdea(self):
+		self.__ideas.pop(0)
+		if len(self.__ideas) < NOIDEAS:
+			self.addRandomIdea()
+
+	def cloneActiveIdea(self):
+		self.__ideas.insert(0, sorted(self.__ideas, key=lambda idea: idea.success)[0].pseudoClone()) # clone it
+
 
 class Idea:
 	def __init__(self, func):
