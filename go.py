@@ -10,6 +10,7 @@ import rectgame
 
 import human
 import tryhard 
+import kingofrandom
 
 """
 noplayers = int(input("Number of players\n>> "))
