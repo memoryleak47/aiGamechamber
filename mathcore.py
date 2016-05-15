@@ -36,10 +36,10 @@ class MultiFunc(Func):
 		return results
 
 	@staticmethod
-	def getRandom(noInput, noOutput):
+	def getRandom(noInput, noOutput, complexity=(0,4)):
 		funcs = list()
 		for i in range(noOutput):
-			funcs.append(SingleFunc.getRandom(noInput))
+			funcs.append(SingleFunc.getRandom(noInput, complexity))
 		return MultiFunc(funcs)
 
 class SingleFunc(Func):
@@ -60,9 +60,9 @@ class SingleFunc(Func):
 		return result
 
 	@staticmethod
-	def getRandom(noInput):
+	def getRandom(noInput, complexity=(0,4)):
 		string = "$"
-		for i in range(random.randint(0, 4)):
+		for i in range(random.randint(complexity[0], complexity[1])):
 
 			# load spots
 			spots=list()
