@@ -15,42 +15,33 @@ class Rectgame:
 		self.noplayers = noplayers
 		self.__players=list()
 		self.__data=list() # [p0.x, p0.y, p1.x, p1.y]
+		self.__history=list()
 
-	def run(self, players):
+	def start(self, players):
 		self.__players = players
 
-		self.__data = []
-		self.__data.append(random.randint(1,WIDTH-2))
-		self.__data.append(random.randint(1,HEIGHT-2))
-		self.__data.append(random.randint(1,WIDTH-2))
-		self.__data.append(random.randint(1,HEIGHT-2))
+		self.__data = [random.randint(1, WIDTH-2), random.randint(1, HEIGHT-2), random.randint(1,WIDTH-2), random.randint(1,HEIGHT-2)]
+		self.__updateData()
 
-		while True:
-			for i in range(len(self.__players)):
-				self.render(self.__players[i])
-				plan = self.__players[i].act(self.__data)
-				if plan[0] < 0 and self.__data[2*i] > 1:
-					self.__data[2*i] -= 1
-				elif plan[0] > 0 and self.__data[2*i] < WIDTH-2:
-					self.__data[2*i] += 1
+	def applyAction(self, action, playerID):
+		if action[0] < 0 and self.__data[2*playerID] > 1:
+			self.__data[2*playerID] -= 1
+		elif action[0] > 0 and self.__data[2*playerID] < WIDTH-2:
+			self.__data[2*playerID] += 1
+		self.__updateData()
 
-				if plan[1] < 0 and self.__data[1 + 2*i] > 1:
-					self.__data[1 + 2*i] -= 1
-				elif plan[1] > 0 and self.__data[1 + 2*i]< HEIGHT-2:
-					self.__data[1 + 2*i] += 1
+	def getEvaluation(self, playerID):
+		if (self.__data[0] == self.__data[2]) and (self.__data[1]) == (self.__data[3]):
+			ev = 100
+		else:
+			ev = -1
 
-				if (self.__data[0] == self.__data[2]) and (self.__data[1]) == (self.__data[3]):
-					self.__players[0].assess(100)
-					self.__players[1].assess(-100)
-					self.__players[0].gameOver()
-					self.__players[1].gameOver()
-					print("Game Over")
-					return
-			self.__players[0].assess(-1)
-			self.__players[1].assess(1)
-			time.sleep(0.05)
+		if playerID == 0:
+			return ev
+		else:
+			return -ev
 
-	def render(self, activePlayer):
+	def render(self):
 		field=list()
 
 		field.append(list("#"*WIDTH))
@@ -59,17 +50,22 @@ class Rectgame:
 		field.append(list("#"*WIDTH))
 
 		char = "c"
-		if self.__players[0] == activePlayer:
-			char = char.upper()
 		field[self.__data[1]][self.__data[0]] = char
 
 		char = "r"
-		if self.__players[1] == activePlayer:
-			char = char.upper()
 		field[self.__data[3]][self.__data[2]] = char
 
 		for line in field:
 			print("".join(line))
+
+	def __updateData(self):
+		self.__history.append(self.__data.copy())
+
+	def getHistory(self):
+		return self.__history.copy()
+
+	def getData(self):
+		return self.__data.copy()
 
 	def getNoInput(self):
 		return self.noplayers * 2

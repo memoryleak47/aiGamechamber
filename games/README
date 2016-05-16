@@ -1,1 +1,12 @@
-A game is a program with multiple players, which are called using the act()-function.
+# README
+
+class Game:
+	constructor __init__(int noPlayers)
+	void start(Player[])
+	void render()
+	void applyAction(float[] action, int playerID)
+	float getEvaluation(int playerID)
+	float[] getData()
+	float[][] getHistory()
+	int getNoOutput()
+	int getNoInput()

@@ -1,1 +1,5 @@
-a player is a class with a function float[] act(float[])
+# README
+
+# class Player:
+#	float[] act(float[])
+#	void evaluate(float)

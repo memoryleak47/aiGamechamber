@@ -2,6 +2,7 @@
 
 import sys
 import os
+import time
 
 sys.path.append(sys.path[0] + "/games")
 sys.path.append(sys.path[0] + "/players")
@@ -12,21 +13,26 @@ import human
 import tryhard 
 import kingofrandom
 
-"""
-noplayers = int(input("Number of players\n>> "))
+# <changeable>
+RENDER = True
+SLEEPTIME = 0.03
+# </changeable>
 
-gamestr = input("Enter Game\n>> ")
-game = eval(gamestr.lower() + "." + gamestr[0].upper() + gamestr[1:].lower() + "(noplayers)")
 
-players=list()
-for i in range(noplayers):
-	playerstr = input("Enter player\n>> ").strip()
-	eval("players.append(" + playerstr.lower() + "." + playerstr[0].upper() + playerstr[1:].lower() + "(game.getNoInput(), game.getNoOutput()))")
+def main():
+	# <changeable>
+	game = rectgame.Rectgame(2)
+	players = [tryhard.Tryhard(game), tryhard.Tryhard(game)]
+	# </changeable>
 
-while True:
-	game.run(players)
-"""
-game = rectgame.Rectgame(2)
-players=[tryhard.Tryhard(game.getNoInput(), game.getNoOutput()), tryhard.Tryhard(game.getNoInput(), game.getNoOutput())]
-while True:
-	game.run(players)
+	game.start(players)
+	while True:
+		for i in range(len(players)):
+			if RENDER:
+				game.render()
+			game.applyAction(players[i].act(), i)
+			players[i].evaluate(game.getEvaluation(i))
+			time.sleep(SLEEPTIME)
+
+if __name__ == "__main__":
+	main()

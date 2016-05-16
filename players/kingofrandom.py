@@ -3,14 +3,14 @@
 import random
 
 class Kingofrandom:
-	def __init__(self, noInput, noOutput):
-		self.noOutput = noOutput
+	def __init__(self, game):
+		self.__game = game
 
-	def act(self, gameinfo):
+	def act(self):
 		l = list()
-		for i in range(self.noOutput):
+		for i in range(self.__game.getNoOutput()):
 			l.append(random.randint(-1000, 1000))
 		return l
 
-	def assess(self, value):
+	def evaluate(self, value):
 		pass
