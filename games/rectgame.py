@@ -13,15 +13,13 @@ class Rectgame:
 			print("Invalid size")
 			sys.exit()
 		self.noplayers = noplayers
-		self.__players=list()
-		self.__data=list() # [p0.x, p0.y, p1.x, p1.y]
-		self.__history=list()
+		self.__players = list()
+		self.__data = list() # [p0.x, p0.y, p1.x, p1.y]
+		self.__history = list()
 
 	def start(self, players):
 		self.__players = players
-
-		self.__data = [random.randint(1, WIDTH-2), random.randint(1, HEIGHT-2), random.randint(1,WIDTH-2), random.randint(1,HEIGHT-2)]
-		self.__updateData()
+		self.__repositionPlayers()
 
 	def applyAction(self, action, playerID):
 		if action[0] < 0 and self.__data[2*playerID] > 1:
@@ -29,9 +27,11 @@ class Rectgame:
 		elif action[0] > 0 and self.__data[2*playerID] < WIDTH-2:
 			self.__data[2*playerID] += 1
 		self.__updateData()
+		if self.__areTheyCatching():
+			self.__repositionPlayers()
 
 	def getEvaluation(self, playerID):
-		if (self.__data[0] == self.__data[2]) and (self.__data[1]) == (self.__data[3]):
+		if self.__areTheyCatching():
 			ev = 100
 		else:
 			ev = -1
@@ -58,9 +58,6 @@ class Rectgame:
 		for line in field:
 			print("".join(line))
 
-	def __updateData(self):
-		self.__history.append(self.__data.copy())
-
 	def getHistory(self):
 		return self.__history.copy()
 
@@ -72,3 +69,14 @@ class Rectgame:
 
 	def getNoOutput(self):
 		return 2
+
+	def __updateData(self):
+		self.__history.append(self.__data.copy())
+
+	def __repositionPlayers(self):
+		self.__data = [random.randint(1, WIDTH-2), random.randint(1, HEIGHT-2), random.randint(1,WIDTH-2), random.randint(1,HEIGHT-2)]
+		self.__updateData()
+
+	def __areTheyCatching(self):
+		return (self.__data[0] == self.__data[2]) and (self.__data[1]) == (self.__data[3])
+
