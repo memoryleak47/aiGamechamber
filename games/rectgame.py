@@ -26,6 +26,11 @@ class Rectgame:
 			self.__data[2*playerID] -= 1
 		elif action[0] > 0 and self.__data[2*playerID] < WIDTH-2:
 			self.__data[2*playerID] += 1
+
+		if action[1] < 0 and self.__data[1 + 2*playerID] > 1:
+			self.__data[1 + 2*playerID] -= 1
+		elif action[1] > 0 and self.__data[1 + 2*playerID] < WIDTH-2:
+			self.__data[1 + 2*playerID] += 1
 		self.__updateData()
 		if self.__areTheyCatching():
 			self.__repositionPlayers()
