@@ -27,7 +27,9 @@ class Tryhard:
 	def evaluate(self, value):
 		self.__ideas[0].evaluate(value)
 		#   if your ideas dont change anything        or if you surrender
-		if (value < 0 and self.__game.getHistory()[-1] == self.__game.getHistory()[-2] and len(self.__game.getHistory()) >= 2) or self.__ideas[0].success < SURRENDERSUCCESS:
+		if (value < 0 and len(self.__game.getHistory()) >= 3 and self.__game.getHistory()[-1] == self.__game.getHistory()[-2] and self.__game.getHistory()[-2] == self.__game.getHistory()[-3]) or self.__ideas[0].success < SURRENDERSUCCESS:
+			# print(self.__game.getHistory())
+			# sys.exit()
 			self.__throwAwayActiveIdea()
 
 	def __addRandomIdea(self):

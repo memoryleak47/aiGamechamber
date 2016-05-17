@@ -4,8 +4,7 @@ class Game:
 	constructor __init__(int noPlayers)
 	void start(Player[])
 	void render()
-	void applyAction(float[] action, int playerID)
-	float getEvaluation(int playerID)
+	void applyAction(float[] action, int playerID) # should apply action & evaluate
 	float[] getData()
 	float[][] getHistory()
 	int getNoOutput()

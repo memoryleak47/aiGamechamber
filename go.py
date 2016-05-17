@@ -31,7 +31,6 @@ def main():
 			if RENDER:
 				game.render()
 			game.applyAction(players[i].act(), i)
-			players[i].evaluate(game.getEvaluation(i))
 			time.sleep(SLEEPTIME)
 
 if __name__ == "__main__":
