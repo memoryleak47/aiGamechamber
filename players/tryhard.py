@@ -8,7 +8,7 @@ from mathcore import *
 
 MIN = -10
 NOIDEAS = 3
-SURRENDERSUCCESS = -50
+SURRENDERSUCCESS = -500
 
 class Tryhard:
 	def __init__(self, game):
@@ -33,19 +33,10 @@ class Tryhard:
 	def __addRandomIdea(self):
 		self.__ideas.append(Idea.getRandomIdea(self.__game.getNoInput(), self.__game.getNoOutput()))
 
-	def __updateIdeas(self):
-		if self.__ideas[0].success < MIN: # the idea was pretty bad
-			self.__throwAwayActiveIdea()
-		else: # it was ok
-			self.__cloneActiveIdea()
-
 	def __throwAwayActiveIdea(self):
 		self.__ideas.pop(0)
 		if len(self.__ideas) < NOIDEAS:
 			self.__addRandomIdea()
-
-	def __cloneActiveIdea(self):
-		self.__ideas.insert(0, sorted(self.__ideas, key=lambda idea: idea.success)[0].pseudoClone()) # clone it
 
 	def __nothingHasChangedFor(self, i):
 		hlen = len(self.__game.getHistory())
@@ -62,10 +53,6 @@ class Idea:
 
 	def evaluate(self, value):
 		self.success += value
-
-	def pseudoClone(self):
-		print("TODO pseudoClone")
-		return self # TODO
 
 	@staticmethod
 	def getRandomIdea(noInput, noOutput):
