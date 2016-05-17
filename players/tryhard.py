@@ -17,7 +17,12 @@ class Tryhard:
 		self.__addRandomIdea()
 
 	def act(self):
-		return self.__ideas[0].func.call(self.__game.getData())
+		while True:
+			result = self.__ideas[0].func.call(self.__game.getData())
+			if not None in result: # if call didnt fail -> go on
+				break
+			self.__throwAwayActiveIdea() # if it failed remove the func & try it with a new one
+		return result
 
 	def evaluate(self, value):
 		self.__ideas[0].evaluate(value)

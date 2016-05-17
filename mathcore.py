@@ -52,7 +52,7 @@ class SingleFunc(Func):
 		return self.string
 
 	def call(self, args):
-		result = -1
+		result = None
 		try:
 			result = eval(self.string)
 		except:
