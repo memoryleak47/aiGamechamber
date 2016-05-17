@@ -27,9 +27,7 @@ class Tryhard:
 	def evaluate(self, value):
 		self.__ideas[0].evaluate(value)
 		#   if your ideas dont change anything        or if you surrender
-		if (value < 0 and len(self.__game.getHistory()) >= 3 and self.__game.getHistory()[-1] == self.__game.getHistory()[-2] and self.__game.getHistory()[-2] == self.__game.getHistory()[-3]) or self.__ideas[0].success < SURRENDERSUCCESS:
-			# print(self.__game.getHistory())
-			# sys.exit()
+		if (value < 0 and self.__nothingHasChangedFor(3)) or (self.__ideas[0].success < SURRENDERSUCCESS):
 			self.__throwAwayActiveIdea()
 
 	def __addRandomIdea(self):
@@ -48,6 +46,13 @@ class Tryhard:
 
 	def __cloneActiveIdea(self):
 		self.__ideas.insert(0, sorted(self.__ideas, key=lambda idea: idea.success)[0].pseudoClone()) # clone it
+
+	def __nothingHasChangedFor(self, i):
+		hlen = len(self.__game.getHistory())
+		for j in range(hlen-i, hlen-1):
+			if self.__game.getHistory()[j] != self.__game.getHistory()[j+1]:
+				return False
+		return True
 
 
 class Idea:
