@@ -6,6 +6,7 @@ import os
 sys.path.append(os.path.dirname(sys.path[0]))
 from mathcore import *
 from player import *
+import time
 
 MIN = -10
 NOIDEAS = 3
@@ -41,6 +42,7 @@ class Tryhard(Player):
 
 	def __nothingHasChangedFor(self, i):
 		hlen = len(self._game.getHistory())
+
 		for j in range(hlen-i, hlen-1):
 			if self._game.getHistory()[j] != self._game.getHistory()[j+1]:
 				return False
