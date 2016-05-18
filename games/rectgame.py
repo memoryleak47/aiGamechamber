@@ -4,16 +4,20 @@ import random
 import sys
 import time
 from game import *
+import tkinter as tk
 
 WIDTH=30
 HEIGHT=30
 
 class Rectgame(Game):
-	def __init__(self, noPlayers):
+	def __init__(self, noPlayers, window):
 		if noPlayers != 2:
 			print("Invalid size")
 			sys.exit()
 		Game.__init__(self, noPlayers)
+		self.__window = window
+		self.__listbox = tk.Listbox(self.__window, width=800, height=600)
+		self.__listbox.pack()
 
 	def _restart(self):
 		self.__repositionPlayers()
@@ -52,8 +56,9 @@ class Rectgame(Game):
 		char = "r"
 		field[self.getData()[3]][self.getData()[2]] = char
 
+		self.__listbox.delete(0, self.__listbox.size()-1)
 		for line in field:
-			print("".join(line))
+			self.__listbox.insert(tk.END, "".join(line))
 
 	def getNoInput(self):
 		return self.getNoPlayers() * 2
