@@ -3,49 +3,25 @@
 import random
 import sys
 
-operators = ["(-$)", "max($,$)", "min($,$)", "($+$)", "($-$)", "(float($)/float($))", "($*$)"]
+# <types>
+FLOAT=0
+BOOL=1
+# </types>
+
+def getOperators(type):
+	if type == FLOAT:
+		return ["(-$)", "max($,$)", "min($,$)", "($+$)", "($-$)", "(float($)/float($))", "($*$)"]
+	elif type == BOOL:
+		return ["not($)", "($)and($)", "($)or($)"]
 
 def die(string):
 	print(string)
 	1/0 # FOR THE STACK TRACE!
 
 class Func:
-	pass
-
-class MultiFunc(Func):
-	def __init__(self, funcs):
-		self.funcs = funcs
-
-	def toString(self):
-		s = ""
-		for func in self.funcs:
-			s += func.toString() + ", "
-		return s.strip(", ")
-
-	@staticmethod
-	def getByStrings(strings):
-		funcs = list()
-		for string in strings:
-			funcs.append(SingleFunc(string))
-		return MultiFunc(funcs)
-
-	def call(self, args):
-		results = list()
-		for func in self.funcs:
-			results.append(func.call(args))
-		return results
-
-	@staticmethod
-	def getRandom(noInput, noOutput, complexity=(0,4)):
-		funcs = list()
-		for i in range(noOutput):
-			funcs.append(SingleFunc.getRandom(noInput, complexity))
-		return MultiFunc(funcs)
-
-class SingleFunc(Func):
 	def __init__(self, string):
 		if not isinstance(string, str):
-			die("SingleFunc(string): (" + str(string) + ")is not a string")
+			die("Func(string): (" + str(string) + ")is not a string")
 		self.string = string
 
 	def toString(self):
@@ -60,7 +36,8 @@ class SingleFunc(Func):
 		return result
 
 	@staticmethod
-	def getRandom(noInput, complexity=(0,4)):
+	def getRandom(noInput, type=FLOAT, complexity=(0,4)):
+		operators = getOperators(type)
 		string = "$"
 		for i in range(random.randint(complexity[0], complexity[1])):
 
@@ -83,4 +60,4 @@ class SingleFunc(Func):
 			spot = string.find("$")
 			string = string[:spot] + "args[" + str(random.randint(0, noInput-1)) + "]" + string[spot+1:]
 
-		return SingleFunc(string)
+		return Func(string)
