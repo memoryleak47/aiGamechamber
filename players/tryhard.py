@@ -97,7 +97,7 @@ class IdeaPart:
 	@staticmethod
 	def getRandom(noInput):
 		rand = random.randint(0, 4)
-		return IdeaPart([Func.getRandom(noInput) for i in range(rand+1)], [Func.getRandom(noInput, type=BOOL) for i in range(rand)], noInput)
+		return IdeaPart([Func.getRandom(noInput, FLOAT, FLOAT) for i in range(rand+1)], [Func.getRandom(noInput, FLOAT, BOOL) for i in range(rand)], noInput)
 
 	def call(self, data):
 		for i in range(len(self.equations)):
@@ -122,17 +122,17 @@ class IdeaPart:
 			# alter an equation
 			rand = random.randint(0, len(equations)-1)
 			equations.pop(rand)
-			equations.insert(rand, Func.getRandom(self.noInput, type=BOOL))
+			equations.insert(rand, Func.getRandom(self.noInput, FLOAT, BOOL))
 		elif rand == 2:
 			# alter a func
 			rand = random.randint(0, len(funcs)-1)
 			funcs.pop(rand)
-			funcs.insert(rand, Func.getRandom(self.noInput))
+			funcs.insert(rand, Func.getRandom(self.noInput, FLOAT, FLOAT))
 		elif rand == 3:
 			# add a func + equation
 			rand = random.randint(0, len(funcs))
-			funcs.insert(rand, Func.getRandom(self.noInput))
-			equations.insert(rand, Func.getRandom(self.noInput, type=BOOL))
+			funcs.insert(rand, Func.getRandom(self.noInput, FLOAT, FLOAT))
+			equations.insert(rand, Func.getRandom(self.noInput, FLOAT, BOOL))
 		else:
 			print("man. really...?")
 		return IdeaPart(funcs, equations, self.noInput)
