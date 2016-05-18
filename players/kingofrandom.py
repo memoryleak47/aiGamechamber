@@ -1,14 +1,15 @@
 #!/usr/bin/python3 -B
 
 import random
+from player import *
 
-class Kingofrandom:
+class Kingofrandom(Player):
 	def __init__(self, game):
-		self.__game = game
+		Player.__init__(self, game)
 
 	def act(self):
 		l = list()
-		for i in range(self.__game.getNoOutput()):
+		for i in range(self._game.getNoOutput()):
 			l.append(random.randint(-1000, 1000))
 		return l
 

@@ -1,8 +1,10 @@
 #!/usr/bin/python3 -B
 
-class Reconstructor:
+from player import *
+
+class Reconstructor(Player):
 	def __init__(self, game):
-		self.__game = game
+		Player.__init__(self, game)
 
 '''
 reconstruct(data, results):

@@ -1,11 +1,10 @@
 #!/usr/bin/python3 -B
 
-class Human:
-	def __init__(self):
+from player import *
+
+class Human(Player):
+	def __init__(self, game):
 		pass
 
 	def act(self):
 		return eval(input(">> "))
-
-	def evaluate(self, value):
-		pass
