@@ -8,10 +8,12 @@ class Game:
 		self.__data = list()
 		self.__history = list()
 		self.__players = list()
+		self.__startTime = 0
 
 	def _gameOver(self):
 		for player in self.__players:
 			player.gameOver()
+		self.__startTime = self.getTime()
 		self._restart()
 
 	def start(self, players):
@@ -57,6 +59,12 @@ class Game:
 
 	def getNoPlayers(self):
 		return self.__noPlayers
+
+	def getStartTime(self):
+		return self.__startTime
+
+	def getTime(self):
+		return len(self.__history)
 
 	def _getPlayer(self, i):
 		return self.__players[i]
