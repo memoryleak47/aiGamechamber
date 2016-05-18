@@ -16,7 +16,7 @@ class Tryhard(Player):
 	def __init__(self, game):
 		Player.__init__(self, game)
 		self.__ideas = list()
-		self.__addRandomIdea()
+		self.__ideas.append(self.__getRandomIdea())
 
 	def act(self):
 		while True:
@@ -26,19 +26,25 @@ class Tryhard(Player):
 			self.__throwAwayActiveIdea() # if it failed remove the func & try it with a new one
 		return result
 
+	def gameOver(self):
+		self.__updateIdeas()
+
 	def evaluate(self, value):
 		self.__ideas[0].evaluate(value)
-		#   if your ideas dont change anything        or if you surrender
-		if (value < 0 and self.__nothingHasChangedFor(3)) or (self.__ideas[0].success < SURRENDERSUCCESS):
+		#   if you surrender OR you get bad evals and don't do anything
+		if (self.__ideas[0].success < SURRENDERSUCCESS) or (value < 0 and self.__nothingHasChangedFor(3)):
 			self.__throwAwayActiveIdea()
 
-	def __addRandomIdea(self):
-		self.__ideas.append(Idea.getRandomIdea(self._game.getNoInput(), self._game.getNoOutput()))
+	def __getRandomIdea(self):
+		return Idea.getRandomIdea(self._game.getNoInput(), self._game.getNoOutput())
 
 	def __throwAwayActiveIdea(self):
 		self.__ideas.pop(0)
 		if len(self.__ideas) < NOIDEAS:
-			self.__addRandomIdea()
+			self.__ideas.append(self.__getRandomIdea())
+
+	def __addActiveIdeaMutation(self):
+		self.__ideas.insert(0, self.__ideas[0].getMutation())
 
 	def __nothingHasChangedFor(self, i):
 		hlen = len(self._game.getHistory())
@@ -47,6 +53,13 @@ class Tryhard(Player):
 			if self._game.getHistory()[j] != self._game.getHistory()[j+1]:
 				return False
 		return True
+
+	def __updateIdeas(self):
+		if self.__ideas[0].success < MIN: # the idea was pretty bad
+			self.__throwAwayActiveIdea()
+		else: # it was ok
+			self.__addActiveIdeaMutation()
+
 
 
 class Idea:
@@ -60,4 +73,8 @@ class Idea:
 	@staticmethod
 	def getRandomIdea(noInput, noOutput):
 		return Idea(MultiFunc.getRandom(noInput, noOutput, complexity=(0,10)))
+
+	def getMutation(self):
+		print("getMutation TODO")
+		return self
 
