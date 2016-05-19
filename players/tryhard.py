@@ -17,14 +17,10 @@ class Tryhard(Player):
 		Player.__init__(self, game)
 		self.__ideas = list()
 		self.__ideas.append(self.__createIdea())
+		print(self.__ideas[0].toString() + "\n")
 
 	def act(self):
-		while True:
-			result = self.__ideas[0].call(self._game.getData())
-			if not None in result: # if call didnt fail -> go on
-				break
-			self.__throwAwayActiveIdea() # if it failed remove the func & try it with a new one
-		return result
+		return self.__ideas[0].call(self._game.getData())
 
 	def gameOver(self):
 		self.__updateIdeas()
@@ -73,9 +69,13 @@ class Idea:
 	def getRandom(noInput, noOutput):
 		return Idea([IdeaPart.getRandom(noInput) for i in range(noOutput)], noInput, noOutput)
 
+	def toString(self):
+		return "{\n\tsuccess = " + str(self.success) + "\n" + "\n\n".join(["\tparts[" + str(i) + "] =\n\t\t" + self.parts[i].toString() for i in range(len(self.parts))]) + "\n}"
+
 	def call(self, data):
 		result = list()
 		for part in self.parts:
+			partresult = part.call(data)
 			result.append(part.call(data))
 		return result
 
@@ -97,13 +97,16 @@ class IdeaPart:
 	@staticmethod
 	def getRandom(noInput):
 		rand = random.randint(0, 4)
-		return IdeaPart([Func.getRandom(noInput, FLOAT, FLOAT) for i in range(rand+1)], [Func.getRandom(noInput, FLOAT, BOOL) for i in range(rand)], noInput)
+		return IdeaPart([UpdateOnCrashFunc.getRandom(noInput, FLOAT, FLOAT) for i in range(rand+1)], [UpdateOnCrashFunc.getRandom(noInput, FLOAT, BOOL) for i in range(rand)], noInput)
 
 	def call(self, data):
 		for i in range(len(self.equations)):
 			if self.equations[i].call(data):
 				return self.funcs[i].call(data)
 		return self.funcs[-1].call(data)
+
+	def toString(self):
+		return "\n\t\t".join([self.equations[i].toString() + ":\n\t\t\t\t" + self.funcs[i].toString() for i in range(len(self.equations))]) + "\n\t\tdefault:\n\t\t\t\t" + self.funcs[-1].toString()
 
 	def getMutation(self):
 		funcs = self.funcs.copy()
@@ -122,17 +125,45 @@ class IdeaPart:
 			# alter an equation
 			rand = random.randint(0, len(equations)-1)
 			equations.pop(rand)
-			equations.insert(rand, Func.getRandom(self.noInput, FLOAT, BOOL))
+			equations.insert(rand, UpdateOnCrashFunc.getRandom(self.noInput, FLOAT, BOOL))
 		elif rand == 2:
 			# alter a func
 			rand = random.randint(0, len(funcs)-1)
 			funcs.pop(rand)
-			funcs.insert(rand, Func.getRandom(self.noInput, FLOAT, FLOAT))
+			funcs.insert(rand, UpdateOnCrashFunc.getRandom(self.noInput, FLOAT, FLOAT))
 		elif rand == 3:
 			# add a func + equation
 			rand = random.randint(0, len(funcs))
-			funcs.insert(rand, Func.getRandom(self.noInput, FLOAT, FLOAT))
-			equations.insert(rand, Func.getRandom(self.noInput, FLOAT, BOOL))
+			funcs.insert(rand, UpdateOnCrashFunc.getRandom(self.noInput, FLOAT, FLOAT))
+			equations.insert(rand, UpdateOnCrashFunc.getRandom(self.noInput, FLOAT, BOOL))
 		else:
 			print("man. really...?")
 		return IdeaPart(funcs, equations, self.noInput)
+
+class UpdateOnCrashFunc:
+	def __init__(self, arg, noInput, inputtype, outputtype):
+		if isinstance(arg, str):
+			self.func = Func(string)
+		elif isinstance(arg, Func):
+			self.func = arg
+		else:
+			die("UpdateOnCrashFunc: wrong arg type")
+		self.noInput = noInput
+		self.inputtype = inputtype
+		self.outputtype = outputtype
+
+	def toString(self):
+		return self.func.toString()
+
+	@staticmethod
+	def getRandom(noInput, inputtype, outputtype):
+		return UpdateOnCrashFunc(Func.getRandom(noInput, inputtype, outputtype), noInput, inputtype, outputtype)
+
+	def call(self, args):
+		while True:
+			result = self.func.call(args, silent=True)
+			if result != ERRORDATA:
+				break
+			print("UpdateOnCrashFunc: update!")
+			self.func = Func.getRandom(self.noInput, self.inputtype, self.outputtype)
+		return result
