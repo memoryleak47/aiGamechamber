@@ -9,51 +9,36 @@ from player import *
 import time
 
 SURRENDERSUCCESS = -800
-MUTATESUCCESS = 300
 FAVSUCCESS = 100
 MAXFAVS = 20
-MUTATESTOP = 100
-LAZINESS_PUNISHMENT = 50
 
 class Tryhard(Player):
 	def __init__(self, game, id):
 		Player.__init__(self, game, id)
-		self.__ideas = list()
+		self.__idea = None
 		self.__favs = list()
 		self.__ideaStartTime = 0
 
-		self.__appendNewIdea()
+		self.__updateIdea()
 
 	def act(self):
-		return self.__ideas[0].call(self._game.getData())
+		return self.__idea.call(self._game.getData())
 
 	def gameOver(self):
-		self.__updateIdeas()
+		if self.__idea.success <= 0:
+			self.__updateIdea()
 
 	def evaluate(self, value):
-		self.__ideas[0].evaluate(value)
+		self.__idea.evaluate(value)
 		#   if you surrender OR you get bad evals and don't do anything
-		if (self.__ideas[0].success <= SURRENDERSUCCESS):
-			self.__throwAwayActiveIdea()
-		elif (value <= 0 and self.__isStuck()):
-			self.__ideas[0].evaluate(-LAZINESS_PUNISHMENT)
-			self.__switchIdeas()
+		if (self.__idea.success <= SURRENDERSUCCESS) or (value <= 0 and self.__isStuck()):
+			self.__updateIdea()
 
-		if (self.__ideas[0].highestSuccess >= FAVSUCCESS):
-			self.__addToFavs(self.__ideas[0])
-		if (self.__ideas[0].success -(self.__ideas[0].noMutations * MUTATESTOP) >= MUTATESUCCESS):
-			self.__ideas[0].noMutations += 1
-			self.__appendActiveIdeaMutation()
-
-	def __throwAwayActiveIdea(self):
-		# print(str(self.getID()) + ": - " + str(len(self.__ideas)))
-		self.__ideas.pop(0)
-		if len(self.__ideas) == 0:
-			self.__appendNewIdea()
+	def __updateIdea(self):
+		if (self.__idea != None) and (self.__idea not in self.__favs) and (self.__idea.highestSuccess >= FAVSUCCESS):
+			self.__addToFavs(self.__idea)
+		self.__idea = self.__getNewIdea()
 		self.__ideaStartTime = self._game.getTime()
-
-	def __switchIdeas(self):
-		self.__ideas.append(self.__ideas.pop(0))
 
 	def __isStuck(self):
 		history = self._game.getHistory()[max(self._game.getStartTime(), self.__ideaStartTime):]
@@ -68,20 +53,6 @@ class Tryhard(Player):
 			stuckCircle.append(data)
 		return False
 
-	def __updateIdeas(self):
-		if self.__ideas[0].success < 0: # the idea was pretty bad
-			self.__throwAwayActiveIdea()
-		else: # it was ok
-			self.__insertActiveIdeaMutation()
-
-	def __insertNewIdea(self):
-		self.__ideas.insert(0, self.__getNewIdea())
-		# print(str(self.getID()) + ": + " + str(len(self.__ideas)))
-
-	def __appendNewIdea(self):
-		self.__ideas.append(self.__getNewIdea())
-		# print(str(self.getID()) + ": + " + str(len(self.__ideas)))
-
 	def __getNewIdea(self):
 		if len(self.__favs) == 0 or random.randint(0, 1) == 0:
 			self.__ideaStartTime = self._game.getTime()
@@ -90,17 +61,6 @@ class Tryhard(Player):
 			favs = sorted(self.__favs, key=lambda fav: fav.highestSuccess)
 			index = random.randint(0, random.randint(0, len(favs)-1))
 			return favs[index].getMutation()
-
-
-	def __insertActiveIdeaMutation(self):
-		self.__ideaStartTime = self._game.getTime()
-		self.__ideas.insert(0, self.__ideas[0].getMutation())
-		# print(str(self.getID()) + ": mutate")
-		# print(str(self.getID()) + ": + " + str(len(self.__ideas)))
-
-	def __appendActiveIdeaMutation(self):
-		self.__ideas.append(self.__ideas[0].getMutation())
-		# print(str(self.getID()) + ": + " + str(len(self.__ideas)))
 
 	def __addToFavs(self, idea):
 		if idea not in self.__favs:
@@ -112,9 +72,6 @@ class Tryhard(Player):
 						minspot = i
 				self.__favs.pop(minspot)
 
-
-
-
 class Idea:
 	def __init__(self, parts, noInput, noOutput):
 		self.parts = parts
@@ -122,7 +79,6 @@ class Idea:
 		self.noOutput = noOutput
 		self.success = 0
 		self.highestSuccess = 0
-		self.noMutations = 0
 
 	@staticmethod
 	def getRandom(noInput, noOutput):
