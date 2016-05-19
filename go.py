@@ -8,6 +8,7 @@ sys.path.append(sys.path[0] + "/games")
 sys.path.append(sys.path[0] + "/players")
 
 import rectgame
+import doublerectgame
 
 import human
 import tryhard 
@@ -35,7 +36,7 @@ def main():
 	window.minsize(800, 600)
 	window.maxsize(800, 600)
 	# <changeable>
-	game = rectgame.Rectgame(2, window)
+	game = doublerectgame.Doublerectgame(2, window)
 	players = [tryhard.Tryhard(game, 0), tryhard.Tryhard(game, 1)]
 	# </changeable>
 

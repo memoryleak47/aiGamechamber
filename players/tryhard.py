@@ -9,8 +9,8 @@ from player import *
 import time
 
 SURRENDERSUCCESS = -800
-CLONESUCCESS = 300
-CLONESTOP = 100
+MUTATESUCCESS = 300
+MUTATESTOP = 100
 LAZINESS_PUNISHMENT = 50
 
 class Tryhard(Player):
@@ -31,11 +31,11 @@ class Tryhard(Player):
 		#   if you surrender OR you get bad evals and don't do anything
 		if (self.__ideas[0].success <= SURRENDERSUCCESS):
 			self.__throwAwayActiveIdea()
-		elif (value < 0 and self.__isStuck()):
+		elif (value <= 0 and self.__isStuck()):
 			self.__ideas[0].success -= LAZINESS_PUNISHMENT
 			self.__switchIdeas()
-		elif (self.__ideas[0].success >= CLONESUCCESS):
-			self.__ideas[0].success -= CLONESTOP
+		elif (self.__ideas[0].success >= MUTATESUCCESS):
+			self.__ideas[0].success -= MUTATESTOP
 			self.__insertActiveIdeaMutation()
 
 	def __throwAwayActiveIdea(self):
