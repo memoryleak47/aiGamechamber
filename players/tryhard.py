@@ -39,7 +39,7 @@ class Tryhard(Player):
 			self.__insertActiveIdeaMutation()
 
 	def __throwAwayActiveIdea(self):
-		print(str(self.getID()) + ": - " + str(len(self.__ideas)))
+		# print(str(self.getID()) + ": - " + str(len(self.__ideas)))
 		self.__ideas.pop(0)
 		if len(self.__ideas) == 0:
 			self.__appendRandomIdea()
@@ -70,21 +70,21 @@ class Tryhard(Player):
 	def __insertRandomIdea(self):
 		self.__ideaStartTime = self._game.getTime()
 		self.__ideas.insert(0, Idea.getRandom(self._game.getNoInput(), self._game.getNoOutput()))
-		print(str(self.getID()) + ": + " + str(len(self.__ideas)))
+		# print(str(self.getID()) + ": + " + str(len(self.__ideas)))
 
 	def __appendRandomIdea(self):
 		self.__ideas.append(Idea.getRandom(self._game.getNoInput(), self._game.getNoOutput()))
-		print(str(self.getID()) + ": + " + str(len(self.__ideas)))
+		# print(str(self.getID()) + ": + " + str(len(self.__ideas)))
 
 	def __insertActiveIdeaMutation(self):
 		self.__ideaStartTime = self._game.getTime()
 		self.__ideas.insert(0, self.__ideas[0].getMutation())
-		print(str(self.getID()) + ": mutate")
-		print(str(self.getID()) + ": + " + str(len(self.__ideas)))
+		# print(str(self.getID()) + ": mutate")
+		# print(str(self.getID()) + ": + " + str(len(self.__ideas)))
 
 	def __appendActiveIdeaMutation(self):
 		self.__ideas.append(self.__ideas[0].getMutation())
-		print(str(self.getID()) + ": + " + str(len(self.__ideas)))
+		# print(str(self.getID()) + ": + " + str(len(self.__ideas)))
 
 
 
@@ -195,6 +195,6 @@ class UpdateOnCrashFunc:
 			result = self.func.call(args, silent=True)
 			if result != ERRORDATA:
 				break
-			print("UpdateOnCrashFunc: update!")
+			# print("UpdateOnCrashFunc: update!")
 			self.func = Func.getRandom(self.noInput, self.inputtype, self.outputtype)
 		return result

@@ -58,8 +58,8 @@ class Doublerectgame(Game):
 			evA += 100
 			evB -= 100
 			gameOver = True
-		self._getPlayer(0).evaluate(evA)
-		self._getPlayer(1).evaluate(evB)
+		self._evaluatePlayer(0, evA)
+		self._evaluatePlayer(1, evB)
 		if gameOver:
 			self._gameOver()
 

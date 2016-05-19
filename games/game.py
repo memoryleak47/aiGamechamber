@@ -9,6 +9,7 @@ class Game:
 		self.__history = list()
 		self.__players = list()
 		self.__startTime = 0
+		self.__scores = list()
 
 	def _gameOver(self):
 		for player in self.__players:
@@ -18,6 +19,8 @@ class Game:
 
 	def start(self, players):
 		self.__players = players
+		for i in range(len(players)):
+			self.__scores.append(0)
 		self._restart()
 
 	def _restart(self):
@@ -49,6 +52,13 @@ class Game:
 	def _incDataMember(self, i, addition):
 		self._setDataMember(i, self.__data[i] + addition)
 
+	def _evaluatePlayer(self, playerID, value):
+		self.__scores[playerID] += value
+		self.__players[playerID].evaluate(value)
+
+	def getScore(self, i):
+		return self.__scores[i]
+
 	def getNoInput(self):
 		print("Game::getNoInput not overwritten")
 		sys.exit()
@@ -65,6 +75,3 @@ class Game:
 
 	def getTime(self):
 		return len(self.__history)
-
-	def _getPlayer(self, i):
-		return self.__players[i]

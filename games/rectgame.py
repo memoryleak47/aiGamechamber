@@ -36,12 +36,12 @@ class Rectgame(Game):
 			data[1 + 2*playerID] += 1
 		self._setData(data)
 		if self.__areTheyCatching():
-			self.__getCatcher().evaluate(100)
-			self.__getRunner().evaluate(-100)
+			self._evaluatePlayer(0, 100)
+			self._evaluatePlayer(1, -100)
 			self._gameOver()
 		else:
-			self.__getCatcher().evaluate(-1)
-			self.__getRunner().evaluate(1)
+			self._evaluatePlayer(0, -1)
+			self._evaluatePlayer(1, 1)
 
 	def render(self):
 		field=list()
@@ -66,12 +66,6 @@ class Rectgame(Game):
 
 	def getNoOutput(self):
 		return 2
-
-	def __getCatcher(self):
-		return self._getPlayer(0)
-
-	def __getRunner(self):
-		return self._getPlayer(1)
 
 	def __repositionPlayers(self):
 		self._setData([random.randint(1, WIDTH-2), random.randint(1, HEIGHT-2), random.randint(1,WIDTH-2), random.randint(1,HEIGHT-2)])
