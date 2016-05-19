@@ -3,8 +3,8 @@
 from player import *
 
 class Reconstructor(Player):
-	def __init__(self, game):
-		Player.__init__(self, game)
+	def __init__(self, game, id):
+		Player.__init__(self, game, id)
 
 '''
 reconstruct(data, results):

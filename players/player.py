@@ -1,7 +1,8 @@
 #!/usr/bin/python3 -B
 
 class Player:
-	def __init__(self, game):
+	def __init__(self, game, id):
+		self.__id = id
 		self._game = game
 
 	def act(self):
@@ -12,3 +13,6 @@ class Player:
 
 	def gameOver(self):
 		pass
+
+	def getID(self):
+		return self.__id

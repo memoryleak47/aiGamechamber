@@ -36,7 +36,7 @@ def main():
 	window.maxsize(800, 600)
 	# <changeable>
 	game = rectgame.Rectgame(2, window)
-	players = [tryhard.Tryhard(game), tryhard.Tryhard(game)]
+	players = [tryhard.Tryhard(game, 0), tryhard.Tryhard(game, 1)]
 	# </changeable>
 
 	game.start(players)

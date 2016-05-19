@@ -13,11 +13,10 @@ NOIDEAS = 3
 SURRENDERSUCCESS = -500
 
 class Tryhard(Player):
-	def __init__(self, game):
-		Player.__init__(self, game)
+	def __init__(self, game, id):
+		Player.__init__(self, game, id)
 		self.__ideas = list()
 		self.__ideas.append(self.__createIdea())
-		print(self.__ideas[0].toString() + "\n")
 
 	def act(self):
 		return self.__ideas[0].call(self._game.getData())

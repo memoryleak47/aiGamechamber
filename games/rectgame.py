@@ -51,10 +51,10 @@ class Rectgame(Game):
 			field.append(list("#" + " " * (WIDTH-2) + "#"))
 		field.append(list("#"*WIDTH))
 
-		char = "c"
+		char = "0"
 		field[self.getData()[1]][self.getData()[0]] = char
 
-		char = "r"
+		char = "1"
 		field[self.getData()[3]][self.getData()[2]] = char
 
 		self.__listbox.delete(0, self.__listbox.size()-1)
