@@ -36,14 +36,14 @@ class Tryhard(Player):
 		if (self.__ideas[0].success <= SURRENDERSUCCESS):
 			self.__throwAwayActiveIdea()
 		elif (value <= 0 and self.__isStuck()):
-			self.__ideas[0].success -= LAZINESS_PUNISHMENT
+			self.__ideas[0].evaluate(-LAZINESS_PUNISHMENT)
 			self.__switchIdeas()
 
 		if (self.__ideas[0].highestSuccess >= FAVSUCCESS):
 			self.__addToFavs(self.__ideas[0])
-		if (self.__ideas[0].success >= MUTATESUCCESS):
-			self.__ideas[0].success -= MUTATESTOP
-			self.__insertActiveIdeaMutation()
+		if (self.__ideas[0].success -(self.__ideas[0].noMutations * MUTATESTOP) >= MUTATESUCCESS):
+			self.__ideas[0].noMutations += 1
+			self.__appendActiveIdeaMutation()
 
 	def __throwAwayActiveIdea(self):
 		# print(str(self.getID()) + ": - " + str(len(self.__ideas)))
@@ -147,9 +147,6 @@ class Idea:
 		index = random.randint(0, len(parts)-1)
 		parts[index] = parts[index].getMutation()
 		return Idea(parts, self.noInput, self.noOutput)
-
-	def getFullSuccess(self):
-		return self.success + self.noMutations * MUTATESUCCESS
 
 class IdeaPart:
 	def __init__(self, funcs, equations, noInput):
