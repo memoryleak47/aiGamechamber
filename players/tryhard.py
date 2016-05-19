@@ -8,9 +8,10 @@ from mathcore import *
 from player import *
 import time
 
-SURRENDERSUCCESS = -300
+SURRENDERSUCCESS = -200
 CLONESUCCESS = 300
 CLONESTOP = 100
+LAZINESS_PUNISHMENT = 10
 
 class Tryhard(Player):
 	def __init__(self, game, id):
@@ -27,8 +28,11 @@ class Tryhard(Player):
 	def evaluate(self, value):
 		self.__ideas[0].evaluate(value)
 		#   if you surrender OR you get bad evals and don't do anything
-		if (self.__ideas[0].success <= SURRENDERSUCCESS) or (value < 0 and self.__nothingHasChangedFor(3)):
+		if (self.__ideas[0].success <= SURRENDERSUCCESS):
 			self.__throwAwayActiveIdea()
+		elif (value < 0 and self.__nothingHasChangedFor(3)):
+			self.__ideas[0].success -= LAZINESS_PUNISHMENT
+			self.__switchIdeas()
 		elif (self.__ideas[0].success >= CLONESUCCESS):
 			self.__ideas[0].success -= CLONESTOP
 			self.__appendActiveIdeaMutation()
@@ -42,6 +46,9 @@ class Tryhard(Player):
 	def __appendActiveIdeaMutation(self):
 		self.__ideas.append(self.__ideas[0].getMutation())
 		print(str(self.getID()) + ": + " + str(len(self.__ideas)))
+
+	def __switchIdeas(self):
+		self.__ideas.append(self.__ideas.pop(0))
 
 	def __insertActiveIdeaMutation(self):
 		self.__ideas.insert(0, self.__ideas[0].getMutation())
