@@ -9,7 +9,10 @@ import tkinter as tk
 WIDTH=30
 HEIGHT=30
 
-# data = [xa, ya, xA, yA, xb, yb, xB, yB]
+# player0: a, c
+# player1: B, D
+# data = [xa, ya, xB, yB, xc, yc, xD, yD]
+
 class Doublerectgame(Game):
 	def __init__(self, noPlayers, window):
 		if noPlayers != 2:
@@ -26,37 +29,49 @@ class Doublerectgame(Game):
 
 	def applyAction(self, action, playerID):
 		data = self.getData()
-		if action[0] < 0 and self.getData()[4*playerID] > 1:
-			data[4*playerID] -= 1
-		elif action[0] > 0 and self.getData()[4*playerID] < WIDTH-2:
-			data[4*playerID] += 1
+		# x first
+		if action[0] < 0 and self.getData()[2*playerID] > 1:
+			data[2*playerID] -= 1
+		elif action[0] > 0 and self.getData()[2*playerID] < WIDTH-2:
+			data[2*playerID] += 1
 
-		if action[1] < 0 and self.getData()[1 + 4*playerID] > 1:
-			data[1 + 4*playerID] -= 1
-		elif action[1] > 0 and self.getData()[1 + 4*playerID] < WIDTH-2:
-			data[1 + 4*playerID] += 1
+		# y first
+		if action[1] < 0 and self.getData()[1 + 2*playerID] > 1:
+			data[1 + 2*playerID] -= 1
+		elif action[1] > 0 and self.getData()[1 + 2*playerID] < WIDTH-2:
+			data[1 + 2*playerID] += 1
 
-		if action[2] < 0 and self.getData()[2 + 4*playerID] > 1:
-			data[2 + 4*playerID] -= 1
-		elif action[2] > 0 and self.getData()[2 + 4*playerID] < WIDTH-2:
-			data[2 + 4*playerID] += 1
+		# x second
+		if action[2] < 0 and self.getData()[4 + 2*playerID] > 1:
+			data[4 + 2*playerID] -= 1
+		elif action[2] > 0 and self.getData()[4 + 2*playerID] < WIDTH-2:
+			data[4 + 2*playerID] += 1
 
-		if action[3] < 0 and self.getData()[3 + 4*playerID] > 1:
-			data[3 + 4*playerID] -= 1
-		elif action[3] > 0 and self.getData()[3 + 4*playerID] < WIDTH-2:
-			data[3 + 4*playerID] += 1
+		# y second
+		if action[3] < 0 and self.getData()[5 + 2*playerID] > 1:
+			data[5 + 2*playerID] -= 1
+		elif action[3] > 0 and self.getData()[5 + 2*playerID] < WIDTH-2:
+			data[5 + 2*playerID] += 1
 
 		gameOver = False
 		self._setData(data)
 		evA = 0
 		evB = 0
-		if data[0] == data[6] and data[1] == data[7]:
+		if data[0] == data[2] and data[1] == data[3]:
+			evA += 100
+			evB -= 100
+			gameOver = True
+		if data[2] == data[4] and data[3] == data[5]:
 			evA -= 100
 			evB += 100
 			gameOver = True
-		if data[2] == data[4] and data[3] == data[5]:
+		if data[4] == data[6] and data[5] == data[7]:
 			evA += 100
 			evB -= 100
+			gameOver = True
+		if data[6] == data[0] and data[7] == data[1]:
+			evA -= 100
+			evB += 100
 			gameOver = True
 		self._evaluatePlayer(0, evA)
 		self._evaluatePlayer(1, evB)
@@ -73,9 +88,9 @@ class Doublerectgame(Game):
 		field.append(list("#"*WIDTH))
 
 		field[self.getData()[1]][self.getData()[0]] = "a"
-		field[self.getData()[3]][self.getData()[2]] = "A"
-		field[self.getData()[5]][self.getData()[4]] = "b"
-		field[self.getData()[7]][self.getData()[6]] = "B"
+		field[self.getData()[3]][self.getData()[2]] = "B"
+		field[self.getData()[5]][self.getData()[4]] = "c"
+		field[self.getData()[7]][self.getData()[6]] = "D"
 
 		self.__listbox.delete(0, self.__listbox.size()-1)
 		for line in field:
