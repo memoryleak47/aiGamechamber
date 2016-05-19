@@ -64,6 +64,7 @@ class Doublerectgame(Game):
 			self._gameOver()
 
 	def render(self):
+		self.__window.wm_title("Doublerectgame: " + str(self.getScore(0)) + "x" + str(self.getScore(1)))
 		field=list()
 
 		field.append(list("#"*WIDTH))

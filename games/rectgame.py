@@ -16,6 +16,7 @@ class Rectgame(Game):
 			sys.exit()
 		Game.__init__(self, noPlayers)
 		self.__window = window
+
 		self.__listbox = tk.Listbox(self.__window, width=800, height=600)
 		self.__listbox.config(font=("Monospace", 12))
 		self.__listbox.pack()
@@ -44,6 +45,7 @@ class Rectgame(Game):
 			self._evaluatePlayer(1, 1)
 
 	def render(self):
+		self.__window.wm_title("Rectgame: " + str(self.getScore(0)) + "x" + str(self.getScore(1)))
 		field=list()
 
 		field.append(list("#"*WIDTH))
