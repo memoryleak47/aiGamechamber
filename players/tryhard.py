@@ -18,6 +18,7 @@ class Tryhard(Player):
 		Player.__init__(self, game, id)
 		self.__ideas = list()
 		self.__appendRandomIdea()
+		self.__ideaStartTime = 0
 
 	def act(self):
 		return self.__ideas[0].call(self._game.getData())
@@ -42,6 +43,7 @@ class Tryhard(Player):
 		self.__ideas.pop(0)
 		if len(self.__ideas) == 0:
 			self.__appendRandomIdea()
+		self.__ideaStartTime = self._game.getTime()
 
 	def __appendActiveIdeaMutation(self):
 		self.__ideas.append(self.__ideas[0].getMutation())
@@ -51,14 +53,15 @@ class Tryhard(Player):
 		self.__ideas.append(self.__ideas.pop(0))
 
 	def __insertActiveIdeaMutation(self):
+		self.__ideaStartTime = self._game.getTime()
 		self.__ideas.insert(0, self.__ideas[0].getMutation())
 		print(str(self.getID()) + ": + " + str(len(self.__ideas)))
 
 	def __isStuck(self):
-		history = self._game.getHistory()[self._game.getStartTime():]
+		history = self._game.getHistory()[max(self._game.getStartTime(), self.__ideaStartTime):]
 		stuckCircle = list()
 		for data in reversed(history):
-			if len(stuckCircle) > 2 and data == stuckCircle[0]:
+			if len(stuckCircle) > 2 and len(stuckCircle)*2 <= len(history) and data == stuckCircle[0]:
 				clen = len(stuckCircle)
 				for i in range(len(stuckCircle)):
 					if stuckCircle[i] != list(reversed(history))[clen + i]:
@@ -74,6 +77,7 @@ class Tryhard(Player):
 			self.__insertActiveIdeaMutation()
 
 	def __insertRandomIdea(self):
+		self.__ideaStartTime = self._game.getTime()
 		self.__ideas.insert(0, Idea.getRandom(self._game.getNoInput(), self._game.getNoOutput()))
 		print(str(self.getID()) + ": + " + str(len(self.__ideas)))
 
