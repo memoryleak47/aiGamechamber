@@ -8,7 +8,7 @@ from mathcore import *
 from player import *
 import time
 
-SURRENDERSUCCESS = -400
+SURRENDERSUCCESS = -800
 CLONESUCCESS = 300
 CLONESTOP = 100
 LAZINESS_PUNISHMENT = 50
@@ -36,7 +36,7 @@ class Tryhard(Player):
 			self.__switchIdeas()
 		elif (self.__ideas[0].success >= CLONESUCCESS):
 			self.__ideas[0].success -= CLONESTOP
-			self.__appendActiveIdeaMutation()
+			self.__insertActiveIdeaMutation()
 
 	def __throwAwayActiveIdea(self):
 		print(str(self.getID()) + ": - " + str(len(self.__ideas)))
@@ -45,17 +45,8 @@ class Tryhard(Player):
 			self.__appendRandomIdea()
 		self.__ideaStartTime = self._game.getTime()
 
-	def __appendActiveIdeaMutation(self):
-		self.__ideas.append(self.__ideas[0].getMutation())
-		print(str(self.getID()) + ": + " + str(len(self.__ideas)))
-
 	def __switchIdeas(self):
 		self.__ideas.append(self.__ideas.pop(0))
-
-	def __insertActiveIdeaMutation(self):
-		self.__ideaStartTime = self._game.getTime()
-		self.__ideas.insert(0, self.__ideas[0].getMutation())
-		print(str(self.getID()) + ": + " + str(len(self.__ideas)))
 
 	def __isStuck(self):
 		history = self._game.getHistory()[max(self._game.getStartTime(), self.__ideaStartTime):]
@@ -84,6 +75,17 @@ class Tryhard(Player):
 	def __appendRandomIdea(self):
 		self.__ideas.append(Idea.getRandom(self._game.getNoInput(), self._game.getNoOutput()))
 		print(str(self.getID()) + ": + " + str(len(self.__ideas)))
+
+	def __insertActiveIdeaMutation(self):
+		self.__ideaStartTime = self._game.getTime()
+		self.__ideas.insert(0, self.__ideas[0].getMutation())
+		print(str(self.getID()) + ": mutate")
+		print(str(self.getID()) + ": + " + str(len(self.__ideas)))
+
+	def __appendActiveIdeaMutation(self):
+		self.__ideas.append(self.__ideas[0].getMutation())
+		print(str(self.getID()) + ": + " + str(len(self.__ideas)))
+
 
 
 
