@@ -32,7 +32,7 @@ class Together(Game):
 		self._setData(data)
 
 	def render(self):
-		self.__window.wm_title("Rectgame: " + str(self.getScore(0)) + "x" + str(self.getScore(1)))
+		self.__window.wm_title("Together: " + str(self.getScore(0)) + "x" + str(self.getScore(1)))
 
 	def getNoInput(self):
 		return 1
