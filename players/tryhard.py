@@ -11,6 +11,7 @@ import time
 SURRENDERSUCCESS = -800
 FAVSUCCESS = 100
 MAXFAVS = 20
+PARENT_FACTOR=0.1
 
 class Tryhard(Player):
 	def __init__(self, game, id):
@@ -58,12 +59,18 @@ class Tryhard(Player):
 			self.__ideaStartTime = self._game.getTime()
 			return Idea.getRandom(self._game.getNoInput(), self._game.getNoOutput())
 		else:
-			favs = sorted(self.__favs, key=lambda fav: fav.highestSuccess)
-			index = random.randint(0, random.randint(0, len(favs)-1))
-			return favs[index].getMutation()
+			highestSuccessSum = 0
+			for fav in self.__favs:
+				highestSuccessSum += fav.highestSuccess
+			tmp = random.random() * highestSuccessSum
+			for fav in self.__favs:
+				tmp -= fav.highestSuccess
+				if tmp <= 0:
+					return fav.getMutation()
 
 	def __addToFavs(self, idea):
 		if idea not in self.__favs:
+			idea.parent = None
 			self.__favs.append(idea)
 			if len(self.__favs) > MAXFAVS:
 				minspot = 0
@@ -79,6 +86,7 @@ class Idea:
 		self.noOutput = noOutput
 		self.success = 0
 		self.highestSuccess = 0
+		self.parent = None
 
 	@staticmethod
 	def getRandom(noInput, noOutput):
@@ -96,13 +104,18 @@ class Idea:
 
 	def evaluate(self, value):
 		self.success += value
+		if self.parent != None:
+			self.parent.highestSuccess += value * PARENT_FACTOR
 		self.highestSuccess = max(self.success, self.highestSuccess)
+
 
 	def getMutation(self):
 		parts = self.parts.copy()
 		index = random.randint(0, len(parts)-1)
 		parts[index] = parts[index].getMutation()
-		return Idea(parts, self.noInput, self.noOutput)
+		idea = Idea(parts, self.noInput, self.noOutput)
+		idea.parent = self
+		return idea
 
 class IdeaPart:
 	def __init__(self, funcs, equations, noInput):
