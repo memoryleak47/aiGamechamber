@@ -8,16 +8,16 @@ from mathcore import *
 from player import *
 import time
 
-SURRENDERSUCCESS = -200
+SURRENDERSUCCESS = -400
 CLONESUCCESS = 300
 CLONESTOP = 100
-LAZINESS_PUNISHMENT = 10
+LAZINESS_PUNISHMENT = 50
 
 class Tryhard(Player):
 	def __init__(self, game, id):
 		Player.__init__(self, game, id)
 		self.__ideas = list()
-		self.__ideas.append(self.__createIdea())
+		self.__appendRandomIdea()
 
 	def act(self):
 		return self.__ideas[0].call(self._game.getData())
@@ -30,7 +30,7 @@ class Tryhard(Player):
 		#   if you surrender OR you get bad evals and don't do anything
 		if (self.__ideas[0].success <= SURRENDERSUCCESS):
 			self.__throwAwayActiveIdea()
-		elif (value < 0 and self.__nothingHasChangedFor(3)):
+		elif (value < 0 and self.__isStuck()):
 			self.__ideas[0].success -= LAZINESS_PUNISHMENT
 			self.__switchIdeas()
 		elif (self.__ideas[0].success >= CLONESUCCESS):
@@ -41,7 +41,7 @@ class Tryhard(Player):
 		print(str(self.getID()) + ": - " + str(len(self.__ideas)))
 		self.__ideas.pop(0)
 		if len(self.__ideas) == 0:
-			self.__ideas.append(self.__createIdea())
+			self.__appendRandomIdea()
 
 	def __appendActiveIdeaMutation(self):
 		self.__ideas.append(self.__ideas[0].getMutation())
@@ -54,13 +54,18 @@ class Tryhard(Player):
 		self.__ideas.insert(0, self.__ideas[0].getMutation())
 		print(str(self.getID()) + ": + " + str(len(self.__ideas)))
 
-	def __nothingHasChangedFor(self, i):
-		hlen = len(self._game.getHistory())
-
-		for j in range(hlen-i, hlen-1):
-			if self._game.getHistory()[j] != self._game.getHistory()[j+1]:
-				return False
-		return True
+	def __isStuck(self):
+		history = self._game.getHistory()[self._game.getStartTime():]
+		stuckCircle = list()
+		for data in reversed(history):
+			if len(stuckCircle) > 2 and data == stuckCircle[0]:
+				clen = len(stuckCircle)
+				for i in range(len(stuckCircle)):
+					if stuckCircle[i] != list(reversed(history))[clen + i]:
+						return False
+				return True
+			stuckCircle.append(data)
+		return False
 
 	def __updateIdeas(self):
 		if self.__ideas[0].success < 0: # the idea was pretty bad
@@ -68,8 +73,13 @@ class Tryhard(Player):
 		else: # it was ok
 			self.__insertActiveIdeaMutation()
 
-	def __createIdea(self):
-		return Idea.getRandom(self._game.getNoInput(), self._game.getNoOutput())
+	def __insertRandomIdea(self):
+		self.__ideas.insert(0, Idea.getRandom(self._game.getNoInput(), self._game.getNoOutput()))
+		print(str(self.getID()) + ": + " + str(len(self.__ideas)))
+
+	def __appendRandomIdea(self):
+		self.__ideas.append(Idea.getRandom(self._game.getNoInput(), self._game.getNoOutput()))
+		print(str(self.getID()) + ": + " + str(len(self.__ideas)))
 
 
 
