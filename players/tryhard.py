@@ -8,9 +8,9 @@ from mathcore import *
 from player import *
 import time
 
-MIN = -10
-NOIDEAS = 3
-SURRENDERSUCCESS = -500
+SURRENDERSUCCESS = -300
+CLONESUCCESS = 300
+CLONESTOP = 100
 
 class Tryhard(Player):
 	def __init__(self, game, id):
@@ -27,16 +27,25 @@ class Tryhard(Player):
 	def evaluate(self, value):
 		self.__ideas[0].evaluate(value)
 		#   if you surrender OR you get bad evals and don't do anything
-		if (self.__ideas[0].success < SURRENDERSUCCESS) or (value < 0 and self.__nothingHasChangedFor(3)):
+		if (self.__ideas[0].success <= SURRENDERSUCCESS) or (value < 0 and self.__nothingHasChangedFor(3)):
 			self.__throwAwayActiveIdea()
+		elif (self.__ideas[0].success >= CLONESUCCESS):
+			self.__ideas[0].success -= CLONESTOP
+			self.__appendActiveIdeaMutation()
 
 	def __throwAwayActiveIdea(self):
+		print(str(self.getID()) + ": - " + str(len(self.__ideas)))
 		self.__ideas.pop(0)
-		if len(self.__ideas) < NOIDEAS:
+		if len(self.__ideas) == 0:
 			self.__ideas.append(self.__createIdea())
 
-	def __addActiveIdeaMutation(self):
+	def __appendActiveIdeaMutation(self):
+		self.__ideas.append(self.__ideas[0].getMutation())
+		print(str(self.getID()) + ": + " + str(len(self.__ideas)))
+
+	def __insertActiveIdeaMutation(self):
 		self.__ideas.insert(0, self.__ideas[0].getMutation())
+		print(str(self.getID()) + ": + " + str(len(self.__ideas)))
 
 	def __nothingHasChangedFor(self, i):
 		hlen = len(self._game.getHistory())
@@ -47,10 +56,10 @@ class Tryhard(Player):
 		return True
 
 	def __updateIdeas(self):
-		if self.__ideas[0].success < MIN: # the idea was pretty bad
+		if self.__ideas[0].success < 0: # the idea was pretty bad
 			self.__throwAwayActiveIdea()
 		else: # it was ok
-			self.__addActiveIdeaMutation()
+			self.__insertActiveIdeaMutation()
 
 	def __createIdea(self):
 		return Idea.getRandom(self._game.getNoInput(), self._game.getNoOutput())
