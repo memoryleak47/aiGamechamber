@@ -17,6 +17,7 @@ class Rectgame(Game):
 		Game.__init__(self, noPlayers)
 		self.__window = window
 		self.__listbox = tk.Listbox(self.__window, width=800, height=600)
+		self.__listbox.config(font=("Monospace", 12))
 		self.__listbox.pack()
 
 	def _restart(self):
