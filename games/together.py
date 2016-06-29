@@ -16,26 +16,25 @@ class Together(Game):
 			sys.exit()
 		Game.__init__(self, noPlayers)
 		self.__window = window
-		self._setData([1]) # constant data
+		self._setData()
 
 	def _restart(self):
 		pass
 
 	def applyAction(self, action, playerID):
-		data = self.getData()
 		if action[0] < 0:
 			self._evaluatePlayer(playerID, 10)
 			self._evaluatePlayer(1-playerID, 10)
 		else:
 			self._evaluatePlayer(playerID, 100)
 			self._evaluatePlayer(1-playerID, -100)
-		self._setData(data)
+		self._setData()
 
 	def render(self):
 		self.__window.wm_title("Together: " + str(self.getScore(0)) + "x" + str(self.getScore(1)))
 
-	def getNoInput(self):
-		return 1
+	def getActionFormat(self):
+		return "bool"
 
-	def getNoOutput(self):
-		return 1
+	def getDataFormat(self):
+		return ""

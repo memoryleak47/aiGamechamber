@@ -59,14 +59,6 @@ class Game:
 	def getScore(self, i):
 		return self.__scores[i]
 
-	def getNoInput(self):
-		print("Game::getNoInput not overwritten")
-		sys.exit()
-
-	def getNoOutput(self):
-		print("Game::getNoOutput not overwritten")
-		sys.exit()
-
 	def getNoPlayers(self):
 		return self.__noPlayers
 
@@ -75,3 +67,9 @@ class Game:
 
 	def getTime(self):
 		return len(self.__history)
+
+	def getDataFormat(self):
+		print("Game::getDataFormat not overwritten")
+
+	def getActionFormat(self):
+		print("Game::getActionFormat not overwritten")

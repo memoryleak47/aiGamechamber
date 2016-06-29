@@ -63,11 +63,11 @@ class Rectgame(Game):
 		for line in field:
 			self.__listbox.insert(tk.END, "".join(line))
 
-	def getNoInput(self):
-		return self.getNoPlayers() * 2
+	def getDataFormat(self):
+		return "int,int,int,int"
 
-	def getNoOutput(self):
-		return 2
+	def getActionFormat(self):
+		return "{-1,0,1}"
 
 	def __repositionPlayers(self):
 		self._setData([random.randint(1, WIDTH-2), random.randint(1, HEIGHT-2), random.randint(1,WIDTH-2), random.randint(1,HEIGHT-2)])

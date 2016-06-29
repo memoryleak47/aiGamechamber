@@ -3,10 +3,6 @@
 import random
 import sys
 
-ANY=-1
-FLOAT = 0
-BOOL = 1
-
 ERRORDATA="_ERRORDATA_"
 
 def die(string):
@@ -32,7 +28,7 @@ class Func:
 		return self.string
 
 	@staticmethod
-	def getRandom(noInput, inputtype=FLOAT, outputtype=FLOAT):
+	def getRandom(noInput, inputformat, outputformat):
 		# outputlayer
 		string = "$"
 		for i in range(random.randint(0, 1)):
@@ -41,7 +37,7 @@ class Func:
 				if string[spot] == "$":
 					spots.append(spot)
 			chosenspot = spots[random.randint(0, len(spots)-1)]
-			operators = Func.getOperators(outputtype, outputtype)
+			operators = Func.getOperators(outputformat, outputformat)
 			chosenoperator = operators[random.randint(0,len(operators)-1)]
 			string = string[:chosenspot] + chosenoperator + string[chosenspot+1:]
 		# exchangelayer
@@ -72,21 +68,21 @@ class Func:
 	@staticmethod
 	def getOperators(inputtype, outputtype):
 		ops = [
-			("($+$)", FLOAT, FLOAT),
-			("($-$)", FLOAT, FLOAT),
-			("($*$)", FLOAT, FLOAT),
-			("($/$)", FLOAT, FLOAT),
-			("min($,$)", FLOAT, FLOAT),
-			("max($,$)", FLOAT, FLOAT),
-			("($<$)", FLOAT, BOOL),
-			("($>$)", FLOAT, BOOL),
-			("($==$)", ANY, BOOL),
-			("not($)", BOOL, BOOL),
-			("($)and($)", BOOL, BOOL),
-			("($)or($)", BOOL, BOOL)
+			("($+$)", "float", "float"),
+			("($-$)", "float", "float"),
+			("($*$)", "float", "float"),
+			("($/$)", "float", "float"),
+			("min($,$)", "float", "float"),
+			("max($,$)", "float", "float"),
+			("($<$)", "float", "bool"),
+			("($>$)", "float", "bool"),
+			("($==$)", "any", "bool"),
+			("not($)", "bool", "bool"),
+			("($)and($)", "bool", "bool"),
+			("($)or($)", "bool", "bool")
 		]
 		result = list()
 		for op in ops:
-			if (op[1] == ANY or inputtype == ANY or op[1] == inputtype) and (op[2] == ANY or outputtype == ANY or op[2] == outputtype):
+			if (op[1] == "any" or inputtype == "any" or op[1] == inputtype) and (op[2] == "any" or outputtype == "any" or op[2] == outputtype):
 				result.append(op[0])
 		return result

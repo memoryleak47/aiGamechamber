@@ -16,3 +16,9 @@ class Player:
 
 	def getID(self):
 		return self.__id
+
+	def getDataFormat(self)
+		return self._game.getDataFormat()
+
+	def getActionFormat(self):
+		return self._game.getActionFormat()

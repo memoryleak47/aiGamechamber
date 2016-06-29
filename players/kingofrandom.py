@@ -8,10 +8,7 @@ class Kingofrandom(Player):
 		Player.__init__(self, game, id)
 
 	def act(self):
-		l = list()
-		for i in range(self._game.getNoOutput()):
-			l.append(random.randint(-1000, 1000))
-		return l
+		print("Kingofrandom::act: TODO")
 
 	def evaluate(self, value):
 		pass

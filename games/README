@@ -7,5 +7,5 @@ class Game:
 	void applyAction(float[] action, int playerID) # should apply action & evaluate
 	float[] getData()
 	float[][] getHistory()
-	int getNoOutput()
-	int getNoInput()
+	int getDataFormat()
+	int getActionFormat()
