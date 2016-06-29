@@ -5,13 +5,14 @@ import sys
 import os
 sys.path.append(os.path.dirname(sys.path[0]))
 from mathcore import *
+import formatter
 from player import *
 import time
 
 SURRENDERSUCCESS = -800
 FAVSUCCESS = 100
 MAXFAVS = 20
-PARENT_FACTOR=0.1
+PARENT_FACTOR = 0.1
 
 class Tryhard(Player):
 	def __init__(self, game, id):
@@ -57,7 +58,7 @@ class Tryhard(Player):
 	def __getNewIdea(self):
 		if len(self.__favs) == 0 or random.randint(0, 1) == 0:
 			self.__ideaStartTime = self._game.getTime()
-			return Idea.getRandom(self._game.getNoInput(), self._game.getNoOutput())
+			return Idea.getRandom(self._game.getDataFormat(), self._game.getActionFormat())
 		else:
 			highestSuccessSum = 0
 			for fav in self.__favs:
@@ -80,27 +81,24 @@ class Tryhard(Player):
 				self.__favs.pop(minspot)
 
 class Idea:
-	def __init__(self, parts, noInput, noOutput):
+	def __init__(self, parts, inputformat, outputformat):
 		self.parts = parts
-		self.noInput = noInput
-		self.noOutput = noOutput
+		self.inputformat = inputformat
+		self.outputformat = outputformat
 		self.success = 0
 		self.highestSuccess = 0
 		self.parent = None
 
 	@staticmethod
-	def getRandom(noInput, noOutput):
-		return Idea([IdeaPart.getRandom(noInput) for i in range(noOutput)], noInput, noOutput)
+	def getRandom(inputformat, outputformat):
+		sections = formatter.splitSections(outputformat)
+		return Idea([IdeaPart.getRandom(inputformat, sections[i]) for i in range(len(sections))], inputformat, outputformat)
 
 	def toString(self):
 		return "{\n\tsuccess = " + str(self.success) + "\n" + "\n\n".join(["\tparts[" + str(i) + "] =\n\t\t" + self.parts[i].toString() for i in range(len(self.parts))]) + "\n}"
 
 	def call(self, data):
-		result = list()
-		for part in self.parts:
-			partresult = part.call(data)
-			result.append(part.call(data))
-		return result
+		return [part.call(data) for part in self.parts]
 
 	def evaluate(self, value):
 		self.success += value
@@ -113,20 +111,20 @@ class Idea:
 		parts = self.parts.copy()
 		index = random.randint(0, len(parts)-1)
 		parts[index] = parts[index].getMutation()
-		idea = Idea(parts, self.noInput, self.noOutput)
+		idea = Idea(parts, self.inputformat, self.outputformat)
 		idea.parent = self
 		return idea
 
 class IdeaPart:
-	def __init__(self, funcs, equations, noInput):
+	def __init__(self, funcs, equations, inputformat):
 		self.funcs = funcs
 		self.equations = equations
-		self.noInput = noInput
+		self.inputformat = inputformat
 
 	@staticmethod
-	def getRandom(noInput):
+	def getRandom(inputformat, outputtype):
 		rand = random.randint(0, 4)
-		return IdeaPart([UpdateOnCrashFunc.getRandom(noInput, FLOAT, FLOAT) for i in range(rand+1)], [UpdateOnCrashFunc.getRandom(noInput, FLOAT, BOOL) for i in range(rand)], noInput)
+		return IdeaPart([UpdateOnCrashFunc.getRandom(inputformat, outputtype) for i in range(rand+1)], [UpdateOnCrashFunc.getRandom(inputformat, "bool") for i in range(rand)], inputformat)
 
 	def call(self, data):
 		for i in range(len(self.equations)):
@@ -154,39 +152,38 @@ class IdeaPart:
 			# alter an equation
 			rand = random.randint(0, len(equations)-1)
 			equations.pop(rand)
-			equations.insert(rand, UpdateOnCrashFunc.getRandom(self.noInput, FLOAT, BOOL))
+			equations.insert(rand, UpdateOnCrashFunc.getRandom(inputformat, "bool"))
 		elif rand == 2:
 			# alter a func
 			rand = random.randint(0, len(funcs)-1)
 			funcs.pop(rand)
-			funcs.insert(rand, UpdateOnCrashFunc.getRandom(self.noInput, FLOAT, FLOAT))
+			funcs.insert(rand, UpdateOnCrashFunc.getRandom(inputformat, formatter.splitSections(outputformat)[rand]))
 		elif rand == 3:
 			# add a func + equation
 			rand = random.randint(0, len(funcs))
-			funcs.insert(rand, UpdateOnCrashFunc.getRandom(self.noInput, FLOAT, FLOAT))
-			equations.insert(rand, UpdateOnCrashFunc.getRandom(self.noInput, FLOAT, BOOL))
+			funcs.insert(rand, UpdateOnCrashFunc.getRandom(inputformat, formatter.splitSections(outputformat)[rand]))
+			equations.insert(rand, UpdateOnCrashFunc.getRandom(inputformat, "bool"))
 		else:
 			print("man. really...?")
-		return IdeaPart(funcs, equations, self.noInput)
+		return IdeaPart(funcs, equations, self.inputformat)
 
 class UpdateOnCrashFunc:
-	def __init__(self, arg, noInput, inputtype, outputtype):
+	def __init__(self, arg, inputformat, outputtype):
 		if isinstance(arg, str):
 			self.func = Func(string)
 		elif isinstance(arg, Func):
 			self.func = arg
 		else:
 			die("UpdateOnCrashFunc: wrong arg type")
-		self.noInput = noInput
-		self.inputtype = inputtype
+		self.inputformat = inputformat
 		self.outputtype = outputtype
 
 	def toString(self):
 		return self.func.toString()
 
 	@staticmethod
-	def getRandom(noInput, inputtype, outputtype):
-		return UpdateOnCrashFunc(Func.getRandom(noInput, inputtype, outputtype), noInput, inputtype, outputtype)
+	def getRandom(inputformat, outputtype):
+		return UpdateOnCrashFunc(Func.getRandom(inputformat, outputtype), inputformat, outputtype)
 
 	def call(self, args):
 		while True:
@@ -194,5 +191,5 @@ class UpdateOnCrashFunc:
 			if result != ERRORDATA:
 				break
 			# print("UpdateOnCrashFunc: update!")
-			self.func = Func.getRandom(self.noInput, self.inputtype, self.outputtype)
+			self.func = Func.getRandom(self.inputformat, self.outputtype)
 		return result

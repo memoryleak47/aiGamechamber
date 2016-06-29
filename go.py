@@ -3,6 +3,7 @@
 import sys
 import os
 import tkinter as tk
+import formatter
 
 sys.path.append(sys.path[0] + "/games")
 sys.path.append(sys.path[0] + "/players")

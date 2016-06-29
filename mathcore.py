@@ -2,6 +2,7 @@
 
 import random
 import sys
+import formatter
 
 ERRORDATA="_ERRORDATA_"
 
@@ -28,7 +29,11 @@ class Func:
 		return self.string
 
 	@staticmethod
-	def getRandom(noInput, inputformat, outputformat):
+	def getRandom(inputformat, outputtype):
+		# TODO
+		"""
+		noInput = formatter.countSections(inputformat)
+
 		# outputlayer
 		string = "$"
 		for i in range(random.randint(0, 1)):
@@ -46,7 +51,7 @@ class Func:
 			if string[spot] == "$":
 				spots.append(spot)
 		for chosenspot in reversed(spots):
-			operators = Func.getOperators(inputtype, outputtype)
+			operators = Func.getOperators(formatterinputtype, outputtype)
 			chosenoperator = operators[random.randint(0,len(operators)-1)]
 			string = string[:chosenspot] + chosenoperator + string[chosenspot+1:]
 		# inputlayer
@@ -62,8 +67,8 @@ class Func:
 		while "$" in string:
 			spot = string.find("$")
 			string = string[:spot] + "args[" + str(random.randint(0, noInput-1)) + "]" + string[spot+1:]
-
-		return Func(string)
+		"""
+		return Func("1")
 
 	@staticmethod
 	def getOperators(inputtype, outputtype):
