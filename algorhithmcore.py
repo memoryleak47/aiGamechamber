@@ -30,6 +30,19 @@ class Algorhithm:
 				die("wot?")
 		return Algorhithm(cmd)
 
+	@staticmethod
+	def getRandom(inputformat, outputformat): pass
+		# TODO
+		# check with which inputdata, we can build the outputdata
+		# ____________________________________
+		# Input:  |(int)a   |(float)b | (int)c|
+		# Output: |(float)d |(bool)e  |       |
+		# *************************************
+		# d = (b*a)
+		# e = (a == c)
+		#
+		# and now insert ifgo's, which don't change the datatypes of the used variables
+
 	def call(self, input):
 		frame = Frame(input)
 		while frame.spot < len(self.cmds) and frame.spot >= 0 and frame.counter < COUNTER_STOP:
