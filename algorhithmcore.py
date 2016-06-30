@@ -38,6 +38,10 @@ class Algorhithm:
 		# Input:  |(int)a   |(float)b | (int)c|
 		# Output: |(float)d |(bool)e  |       |
 		# *************************************
+
+		# |
+		# V
+
 		# d = (b*a)
 		# e = (a == c)
 		#
