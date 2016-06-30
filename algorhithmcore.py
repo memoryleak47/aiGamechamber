@@ -7,9 +7,9 @@ def die(msg):
 	1/0 # FOR THE STACK TRACE
 
 class Frame:
-	def __init__(self, args):
+	def __init__(self, input):
 		self.spot = 0
-		self.vars = [0] + args
+		self.vars = [0, input]
 		self.counter = 0
 
 class Algorhithm:
@@ -18,22 +18,23 @@ class Algorhithm:
 
 	@staticmethod
 	def parse(text):
-		lines = text.split("\n")
+		lines = text.strip("\n").split("\n")
 		cmd = list()
 		for line in lines:
 			splat = line.split(" ")
 			if splat[0] == "ifgo":
-				cmd.append(IfgoCommand(splat[1], splat[2]))
+				cmd.append(IfgoCommand(int(splat[1]), int(splat[2])))
 			elif splat[0] == "set":
-				cmd.append(SetCommand(splat[1], OperatorPointer(splat[2], splat[3])))
+				cmd.append(SetCommand(int(splat[1]), splat[2]))
 			else:
 				die("wot?")
-		return cmd
+		return Algorhithm(cmd)
 
-	def call(self, args):
-		frame = Frame(args)
-		while frame.spot < len(self.cmds)-1 and frame.counter < COUNTER_STOP:
-			cmds[frame.spot].call(frame)
+	def call(self, input):
+		frame = Frame(input)
+		while frame.spot < len(self.cmds) and frame.spot >= 0 and frame.counter < COUNTER_STOP:
+			tmpspot = frame.spot
+			self.cmds[frame.spot].call(frame)
 			frame.counter += 1
 		return frame.vars[0]
 
@@ -46,32 +47,34 @@ class IfgoCommand:
 		self.line = line
 
 	def call(self, frame):
-		if True == frame.vars[self.condition]:
+		if frame.vars[self.condition]:
 			frame.spot = self.line
+		else:
+			frame.spot += 1
 
 	def toString(self):
-		return "ifgo " + condition + " " + line
+		return "ifgo " + str(self.condition) + " " + str(self.line)
 
 class SetCommand:
-	def __init__(self, var, operatorPointer):
+	def __init__(self, var, func):
 		self.var = var
-		self.operatorPointer = operatorPointer
+		self.func = func
 
 	def call(self, frame):
-		frame.vars[self.var] = self.operatorPointer.call(frame)
+		try:
+			vars = frame.vars.copy()
+			x = eval(self.func)
+		except:
+			print("SetCommand::call(): invalid func:", self.func)
+		while len(frame.vars)-1 < self.var:
+			frame.vars.append(0)
+		frame.vars[self.var] = x
 		frame.spot += 1
 
 	def toString(self):
-		return "set " + self.var + " " + self.operatorPointer.id + " " + self.operatorPointer.var
+		return "set " + str(self.var) + " " + self.func
 
-class OperatorPointer:
-	def __init__(self, id, var):
-		self.id = id
-		self.var = var
-
-	def call(self, frame):
-		return operators[self.id](frame.vars[var])
-
+"""
 operators = [
 	(lambda x: x[0] + x[1], "(int,int)", "int"),
 	(lambda x: x[0] + x[1], "(float,float)", "float"),
@@ -81,3 +84,4 @@ operators = [
 	(lambda x: x[0] + x[1], "(str,str)", "str"),
 	(lambda x: (x, x+1), "int", "(int,int)"),
 ]
+"""
