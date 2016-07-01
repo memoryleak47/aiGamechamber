@@ -8,6 +8,7 @@ import tkinter as tk
 
 WIDTH=30
 HEIGHT=30
+TILESIZE = 10
 
 # player0: a, c
 # player1: B, D
@@ -20,9 +21,9 @@ class Doublerectgame(Game):
 			sys.exit()
 		Game.__init__(self, noPlayers)
 		self.__window = window
-		self.__listbox = tk.Listbox(self.__window, width=800, height=600)
-		self.__listbox.config(font=("Monospace", 12))
-		self.__listbox.pack()
+
+		self.__canvas = tk.Canvas(self.__window, width=800, height=600)
+		self.__canvas.pack()
 
 	def _restart(self):
 		self.__repositionPlayers()
@@ -80,27 +81,28 @@ class Doublerectgame(Game):
 
 	def render(self):
 		self.__window.wm_title("Doublerectgame: " + str(self.getScore(0)) + "x" + str(self.getScore(1)))
-		field=list()
 
-		field.append(list("#"*WIDTH))
-		for i in range(HEIGHT-2):
-			field.append(list("#" + " " * (WIDTH-2) + "#"))
-		field.append(list("#"*WIDTH))
+		self.__canvas.create_rectangle(0, 0, WIDTH*TILESIZE, HEIGHT*TILESIZE, fill="black")
+		self.__canvas.create_rectangle(TILESIZE, TILESIZE, (WIDTH-1)*TILESIZE, (HEIGHT-1)*TILESIZE, fill="white")
 
-		field[self.getData()[1]][self.getData()[0]] = "a"
-		field[self.getData()[3]][self.getData()[2]] = "B"
-		field[self.getData()[5]][self.getData()[4]] = "c"
-		field[self.getData()[7]][self.getData()[6]] = "D"
-
-		self.__listbox.delete(0, self.__listbox.size()-1)
-		for line in field:
-			self.__listbox.insert(tk.END, "".join(line))
+		x = self.getData()[0]*TILESIZE
+		y = self.getData()[1]*TILESIZE
+		self.__canvas.create_rectangle(x, y, x+TILESIZE, y+TILESIZE, fill="red")
+		x = self.getData()[2]*TILESIZE
+		y = self.getData()[3]*TILESIZE
+		self.__canvas.create_rectangle(x, y, x+TILESIZE, y+TILESIZE, fill="blue")
+		x = self.getData()[4]*TILESIZE
+		y = self.getData()[5]*TILESIZE
+		self.__canvas.create_rectangle(x, y, x+TILESIZE, y+TILESIZE, fill="yellow")
+		x = self.getData()[6]*TILESIZE
+		y = self.getData()[7]*TILESIZE
+		self.__canvas.create_rectangle(x, y, x+TILESIZE, y+TILESIZE, fill="green")
 
 	def getDataFormat(self):
-		return "int,int,int,int,int,int,int,int"
+		return "(int,int,int,int,int,int,int,int)"
 
 	def getActionFormat(self):
-		return "{-1,0,1},{-1,0,1},{-1,0,1},{-1,0,1}"
+		return "({-1,0,1},{-1,0,1},{-1,0,1},{-1,0,1})"
 
 	def __repositionPlayers(self):
 		self._setData([random.randint(1, WIDTH-2), random.randint(1, HEIGHT-2), random.randint(1,WIDTH-2), random.randint(1,HEIGHT-2), random.randint(1, WIDTH-2), random.randint(1, HEIGHT-2), random.randint(1,WIDTH-2), random.randint(1,HEIGHT-2)])
