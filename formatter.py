@@ -79,7 +79,7 @@ def matches(data, format):
 		die("wot format section: " + format)
 	return True
 
-def splitFormat(format): # "(1,2,3)" -> [1, 2, 3]; "{'a','b','c'}" -> ['a', 'b', 'c']
+def splitSections(format): # "(1,2,3)" -> [1, 2, 3]; "{'a','b','c'}" -> ['a', 'b', 'c']
 	format = format[1:-1]
 	i = 0
 	sections = list()

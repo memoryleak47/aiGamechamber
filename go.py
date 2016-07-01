@@ -13,7 +13,8 @@ import doublerectgame
 import together
 
 import human
-import tryhard 
+import functryhard 
+import algotryhard 
 import kingofrandom
 
 # <changeable>
@@ -39,7 +40,7 @@ def main():
 	window.maxsize(800, 600)
 	# <changeable>
 	game = rectgame.Rectgame(2, window)
-	players = [tryhard.Tryhard(game, 0), tryhard.Tryhard(game, 1)]
+	players = [functryhard.FuncTryhard(game, 0), functryhard.FuncTryhard(game, 1)]
 	# </changeable>
 
 	game.start(players)
