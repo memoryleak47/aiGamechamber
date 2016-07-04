@@ -47,6 +47,7 @@ class Rectgame(Game):
 	def render(self):
 		self.__window.wm_title("Rectgame: " + str(self.getScore(0)) + "x" + str(self.getScore(1)))
 		
+		self.__canvas.delete("all")
 		self.__canvas.create_rectangle(0, 0, WIDTH*TILESIZE, HEIGHT*TILESIZE, fill="black")
 		self.__canvas.create_rectangle(TILESIZE, TILESIZE, (WIDTH-1)*TILESIZE, (HEIGHT-1)*TILESIZE, fill="white")
 
