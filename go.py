@@ -41,6 +41,7 @@ def main():
 	# <changeable>
 	game = rectgame.Rectgame(2, window)
 	players = [functryhard.FuncTryhard(game, 0), functryhard.FuncTryhard(game, 1)]
+	#players = [kingofrandom.KingOfRandom(game, 0), kingofrandom.KingOfRandom(game, 1)]
 	# </changeable>
 
 	game.start(players)
