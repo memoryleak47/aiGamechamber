@@ -127,14 +127,14 @@ def getRandomFunc(inputformat, outputformat): # creates a Func, that converts da
 		if outputformat.startswith("["):
 			die("no lists yet")
 			return ERRORDATA
+		if outputformat == "int":
+			return EvalFunc(getRandomPrimitiveFuncStr(inputformat, "int"))
 		if outputformat == "float":
-			return getRandomFloatFunc(inputformat)
-		if outputformat == "float":
-			return getRandomIntFunc(inputformat)
-		if outputformat == "bool":
-			return getRandomBoolFunc(inputformat)
+			return EvalFunc(getRandomPrimitiveFuncStr(inputformat, "float"))
 		if outputformat == "str":
-			return getRandomStrFunc(inputformat)
+			return EvalFunc(getRandomPrimitiveFuncStr(inputformat, "str"))
+		if outputformat == "bool":
+			return EvalFunc(getRandomPrimitiveFuncStr(inputformat, "bool"))
 		if outputformat.startswith("'") or outputformat.startswith('"'):
 			return EvalFunc("'" + outputformat[1:-1] + "'")
 		die("getRandomFunc(). dunno, what todo with outputformat=" + outputformat)
@@ -184,17 +184,21 @@ class EvalFunc:
 		except:
 			die("EvalFunc::call() failed func=" + self.string)
 
-def getRandomFloatFunc(inputformat):
-	return EvalFunc("3.2")
-def getRandomIntFunc(inputformat):
-	return EvalFunc("2")
-def getRandomBoolFunc(inputformat):
-	return EvalFunc("True")
-def getRandomStrFunc(inputformat):
-	return EvalFunc('"wow"')
+def getRandomPrimitiveFuncStr(inputformat, outputtype, recursion=0.95):
+	outteroperator = random.choice(getOperators("any", outputtype))
+	opstring = outteroperator[0]
+	opin = outteroperator[1]
+	opout = outteroperator[2]
 
+	if random.random() < recursion: # another step
+		while "$" in opstring:
+			opstring = opstring.replace("$", getRandomPrimitiveFuncStr("any", opin, recursion/2), 1)
+	else: # insert real values
+		while "$" in opstring:
+			value = "<wow>"
+			opstring = opstring.replace("$", value, 1)
+	return opstring
 
-"""
 def getOperators(inputtype, outputtype):
 	ops = [
 		("($+$)", "float", "float"),
@@ -213,6 +217,5 @@ def getOperators(inputtype, outputtype):
 	result = list()
 	for op in ops:
 		if (op[1] == "any" or inputtype == "any" or op[1] == inputtype) and (op[2] == "any" or outputtype == "any" or op[2] == outputtype):
-			result.append(op[0])
+			result.append(op)
 	return result
-"""
