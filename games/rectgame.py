@@ -25,16 +25,15 @@ class Rectgame(Game):
 		self.__repositionPlayers()
 
 	def applyAction(self, action, playerID):
-		action = [int(x) for x in action]
 		data = self.getData()
-		if action[0] < 0 and self.getData()[2*playerID] > 1:
+		if action[0] == "-1" and self.getData()[2*playerID] > 1:
 			data[2*playerID] -= 1
-		elif action[0] > 0 and self.getData()[2*playerID] < WIDTH-2:
+		elif action[0] == "1" and self.getData()[2*playerID] < WIDTH-2:
 			data[2*playerID] += 1
 
-		if action[1] < 0 and self.getData()[1 + 2*playerID] > 1:
+		if action[1] == "-1" and self.getData()[1 + 2*playerID] > 1:
 			data[1 + 2*playerID] -= 1
-		elif action[1] > 0 and self.getData()[1 + 2*playerID] < WIDTH-2:
+		elif action[1] == "1" and self.getData()[1 + 2*playerID] < WIDTH-2:
 			data[1 + 2*playerID] += 1
 		self._setData(data)
 		if self.__areTheyCatching():

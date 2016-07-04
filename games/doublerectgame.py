@@ -31,27 +31,27 @@ class Doublerectgame(Game):
 	def applyAction(self, action, playerID):
 		data = self.getData()
 		# x first
-		if action[0] < 0 and self.getData()[2*playerID] > 1:
+		if action[0] == "-1" and self.getData()[2*playerID] > 1:
 			data[2*playerID] -= 1
-		elif action[0] > 0 and self.getData()[2*playerID] < WIDTH-2:
+		elif action[0] == "1" and self.getData()[2*playerID] < WIDTH-2:
 			data[2*playerID] += 1
 
 		# y first
-		if action[1] < 0 and self.getData()[1 + 2*playerID] > 1:
+		if action[1] == "-1" and self.getData()[1 + 2*playerID] > 1:
 			data[1 + 2*playerID] -= 1
-		elif action[1] > 0 and self.getData()[1 + 2*playerID] < WIDTH-2:
+		elif action[1] == "1" and self.getData()[1 + 2*playerID] < WIDTH-2:
 			data[1 + 2*playerID] += 1
 
 		# x second
-		if action[2] < 0 and self.getData()[4 + 2*playerID] > 1:
+		if action[2] == "-1" and self.getData()[4 + 2*playerID] > 1:
 			data[4 + 2*playerID] -= 1
-		elif action[2] > 0 and self.getData()[4 + 2*playerID] < WIDTH-2:
+		elif action[2] == "1" and self.getData()[4 + 2*playerID] < WIDTH-2:
 			data[4 + 2*playerID] += 1
 
 		# y second
-		if action[3] < 0 and self.getData()[5 + 2*playerID] > 1:
+		if action[3] == "-1" and self.getData()[5 + 2*playerID] > 1:
 			data[5 + 2*playerID] -= 1
-		elif action[3] > 0 and self.getData()[5 + 2*playerID] < WIDTH-2:
+		elif action[3] == "1" and self.getData()[5 + 2*playerID] < WIDTH-2:
 			data[5 + 2*playerID] += 1
 
 		gameOver = False

@@ -136,7 +136,7 @@ def getRandomFunc(inputformat, outputformat): # creates a Func, that converts da
 		if outputformat == "str":
 			return getRandomStrFunc(inputformat)
 		if outputformat.startswith("'") or outputformat.startswith('"'):
-			return EvalFunc(outputformat[1:-1])
+			return EvalFunc("'" + outputformat[1:-1] + "'")
 		die("getRandomFunc(). dunno, what todo with outputformat=" + outputformat)
 
 class BraceFunc:
