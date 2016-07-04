@@ -6,7 +6,7 @@ import re
 	TODO ranges: int[0-30]
 
 	Examples for formats:
-		"({-1,0,1},int)":
+		"({'-1','0','1'},int)":
 			(1,1)
 			(-1,4)
 			(0,18)
@@ -15,11 +15,11 @@ import re
 			(1, 2)
 			(19, 20)
 			100
-		"[(1, bool, float)]":
+		"[('1', bool, float)]":
 			[(1, true, 2.3f)  |  (1, false, 0.0f)]
 			[(1, false, 1.5f)]
 			[(1, false, 1.5f)  |  (1, true, 3.f)  |  (1, false, 2.2f)]
-		"([(false, bool, {-1,0,[str]})], int)":
+		"([('False', bool, {'-1','0',[str]})], int)":
 			([false, false, -1  |  false, true, 0  |  false, true, ["wow"  |  "really"]],2)
 			([],54)
 			([false, false, -1  |  []],2)
@@ -75,6 +75,8 @@ def matches(data, format):
 		if not isinstance(data, bool):
 			print("no bool", data)
 			return False
+	elif format.startswith("'") or format.startswith('"'):
+		return format[1:-1] == data
 	else:
 		die("wot format section: " + format)
 	return True

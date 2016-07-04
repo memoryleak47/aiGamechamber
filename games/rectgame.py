@@ -25,6 +25,7 @@ class Rectgame(Game):
 		self.__repositionPlayers()
 
 	def applyAction(self, action, playerID):
+		action = [int(x) for x in action]
 		data = self.getData()
 		if action[0] < 0 and self.getData()[2*playerID] > 1:
 			data[2*playerID] -= 1
@@ -61,7 +62,7 @@ class Rectgame(Game):
 		return "(int,int,int,int)"
 
 	def getActionFormat(self):
-		return "({-1,0,1},{-1,0,1})"
+		return "({'-1','0','1'},{'-1','0','1'})"
 
 	def __repositionPlayers(self):
 		self._setData([random.randint(1, WIDTH-2), random.randint(1, HEIGHT-2), random.randint(1,WIDTH-2), random.randint(1,HEIGHT-2)])

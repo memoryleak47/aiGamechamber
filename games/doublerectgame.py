@@ -102,7 +102,7 @@ class Doublerectgame(Game):
 		return "(int,int,int,int,int,int,int,int)"
 
 	def getActionFormat(self):
-		return "({-1,0,1},{-1,0,1},{-1,0,1},{-1,0,1})"
+		return "({'-1','0','1'},{'-1','0','1'},{'-1','0','1'},{'-1','0','1'})"
 
 	def __repositionPlayers(self):
 		self._setData([random.randint(1, WIDTH-2), random.randint(1, HEIGHT-2), random.randint(1,WIDTH-2), random.randint(1,HEIGHT-2), random.randint(1, WIDTH-2), random.randint(1, HEIGHT-2), random.randint(1,WIDTH-2), random.randint(1,HEIGHT-2)])
