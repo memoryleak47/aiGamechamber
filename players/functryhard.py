@@ -195,9 +195,57 @@ def getRandomPrimitiveFuncStr(inputformat, outputtype, recursion=0.95):
 			opstring = opstring.replace("$", getRandomPrimitiveFuncStr("any", opin, recursion/2), 1)
 	else: # insert real values
 		while "$" in opstring:
-			value = "<wow>"
-			opstring = opstring.replace("$", value, 1)
+			opstring = opstring.replace("$", getRandomPrimitiveValueStr(opin), 1)
 	return opstring
+
+def getRandomPrimitiveValueStr(type, format):
+	if False and random.random() < 0.25: # there is a list to reduce from
+		# reduce
+		pass
+	elif random.random() < 0.5:
+		return random.choice(getPrimitiveStrSpots(type, format))
+	else:
+		if type == "float":
+			x = random.random() * 35565 # optimize?
+			if random.random() < 0.2:
+				return -x
+			return x
+		elif type == "int":
+			x = int(random.random() * 35565 * random.random()) # optimize?
+			if random.random() < 0.2:
+				return -x
+			return x
+		elif type == "bool":
+			return random.random() < 0.5
+		elif type == "str":
+			return "very random generated string"
+		die("getRandomPrimitiveValueStr(" + type + ", " + format + "): unknown type")
+
+def getPrimitiveStrSpots(type, format):
+	i = 0
+	while i < len(format): # remove lists
+		if format[i] == "[":
+			while format[i] != "]":
+				format = format[:i] + format[i+1:]
+		i += 1
+
+	spots = list()
+	counter = list()
+	for i in range(len(format)):
+		if format[i] == "(":
+			counter.append("0")
+		elif format[i] == ")":
+			counter = counter[:-1]
+		elif format[i] == ",":
+			tmp = counter[-1]
+			counter = counter[:-1]
+			counter.append(str(int(tmp)+1))
+		elif format[i:].startswith(type):
+			tmp = "args[" + ']['.join(counter) + "]"
+			if tmp == "args[]":
+				tmp = "args"
+			spots.append(tmp)
+	return spots
 
 def getOperators(inputtype, outputtype):
 	ops = [
