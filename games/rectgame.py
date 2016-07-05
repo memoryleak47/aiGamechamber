@@ -45,7 +45,7 @@ class Rectgame(Game):
 			self._evaluatePlayer(1, 1)
 
 	def render(self):
-		self.__window.wm_title("Rectgame: " + str(self.getScore(0)) + "x" + str(self.getScore(1)))
+		self.__window.wm_title("Rectgame: red=" + str(self.getScore(0)) + " green=" + str(self.getScore(1)))
 		
 		self.__canvas.delete("all")
 		self.__canvas.create_rectangle(0, 0, WIDTH*TILESIZE, HEIGHT*TILESIZE, fill="black")

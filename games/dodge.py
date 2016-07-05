@@ -68,7 +68,7 @@ class Dodge(Game):
 		self._evaluatePlayer(0, eval0)
 		self._evaluatePlayer(1, eval1)
 
-		if action[2] != "spawn" and len(balls) < 5:
+		if action[2] != "spawn":# and len(balls) < 5:
 			speedX = int(action[0])
 			speedY = int(action[1])
 			posX = data[playerID*2]
@@ -80,7 +80,7 @@ class Dodge(Game):
 		self._setData(data)
 
 	def render(self):
-		self.__window.wm_title("Dodge: " + str(self.getScore(0)) + "x" + str(self.getScore(1)))
+		self.__window.wm_title("Dodge: red=" + str(self.getScore(0)) + " grenn=" + str(self.getScore(1)))
 		
 		self.__canvas.delete("all")
 		self.__canvas.create_rectangle(0, 0, WIDTH*TILESIZE, HEIGHT*TILESIZE, fill="black")
