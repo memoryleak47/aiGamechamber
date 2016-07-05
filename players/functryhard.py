@@ -111,7 +111,7 @@ class Idea:
 		self.highestSuccess = max(self.success, self.highestSuccess)
 
 	def getMutation(self):
-		die("TODO getMutation")
+		return self.func.getMutation()
 
 # func
 
@@ -128,15 +128,15 @@ def getRandomFunc(inputformat, outputformat): # creates a Func, that converts da
 			die("no lists yet")
 			return ERRORDATA
 		if outputformat == "int":
-			return EvalFunc(getRandomPrimitiveFuncStr(inputformat, "int"))
+			return EvalFunc(getRandomPrimitiveFuncStr(inputformat, "int"), inputformat, outputformat)
 		if outputformat == "float":
-			return EvalFunc(getRandomPrimitiveFuncStr(inputformat, "float"))
+			return EvalFunc(getRandomPrimitiveFuncStr(inputformat, "float"), inputformat, outputformat)
 		if outputformat == "str":
-			return EvalFunc(getRandomPrimitiveFuncStr(inputformat, "str"))
+			return EvalFunc(getRandomPrimitiveFuncStr(inputformat, "str"), inputformat, outputformat)
 		if outputformat == "bool":
-			return EvalFunc(getRandomPrimitiveFuncStr(inputformat, "bool"))
+			return EvalFunc(getRandomPrimitiveFuncStr(inputformat, "bool"), inputformat, outputformat)
 		if outputformat.startswith("'") or outputformat.startswith('"'):
-			return EvalFunc("'" + outputformat[1:-1] + "'")
+			return EvalFunc("'" + outputformat[1:-1] + "'", inputformat, outputformat)
 		die("getRandomFunc(). dunno, what todo with outputformat=" + outputformat)
 
 class InputSwitchFunc: # has one func for every inputformat permutation
@@ -150,6 +150,15 @@ class InputSwitchFunc: # has one func for every inputformat permutation
 				return funcs[i].call(args)
 		die("BraceFunc::call(): no format is matched")
 		return ERRORDATA
+
+	def getMutation(self):
+		funcs = [x.copy() for x in self.funcs]
+		i = random.choice(range(len(funcs)))
+		funcs[i] = funcs[i].getMutation()
+		return InputSwitchFunc(self.inputformats.copy(), funcs)
+
+	def copy(self):
+		return InputSwitchFunc(self.inputformats.copy(), [x.copy() for x in self.funcs])
 
 	@staticmethod
 	def getRandom(inputformat, outputformat):
@@ -168,6 +177,20 @@ class OutputSwitchFunc: # has one condition and func for every outputformat perm
 				return self.funcs[i].call(args)
 		return self.funcs[-1].call(args)
 
+	def getMutation(self):
+		funcs = [x.copy() for x in self.funcs]
+		conditions = [x.copy() for x in self.conditions]
+		if random.random() > 0.5:
+			i = random.choice(range(len(funcs)))
+			funcs[i] = funcs[i].getMutation()
+		else:
+			i = random.choice(range(len(conditions)))
+			conditions[i] = conditions[i].getMutation()
+		return OutputSwitchFunc(self.outputformats.copy(), conditions, funcs)
+
+	def copy(self):
+		return OutputSwitchFunc(self.outputformats.copy(), [x.copy() for x in self.conditions], [x.copy() for x in self.funcs])
+
 	@staticmethod
 	def getRandom(inputformat, outputformat):
 		outputformats = formatter.getPermutations(outputformat)
@@ -183,6 +206,19 @@ class ParenFunc:
 			t += (part.call(args),) # to make it tuply anyhow
 		return t
 
+	def getMutation(self):
+		parts = self.parts.copy()
+		i = random.choice(range(len(parts)))
+		parts[i] = parts[i].getMutation()
+		return ParenFunc(parts)
+
+	def copy(self):
+		return ParenFunc(self.parts.copy())
+
+	def toString(self):
+		return "paren(" + ", ".join([x.toString() for x in self.parts]) + ")"
+		return str(evals)
+
 	@staticmethod
 	def getRandom(inputformat, outputformat):
 		parts = list()
@@ -192,8 +228,10 @@ class ParenFunc:
 		return ParenFunc(parts)
 
 class EvalFunc:
-	def __init__(self, string):
+	def __init__(self, string, inputformat, outputformat):
 		self.string = string
+		self.inputformat = inputformat
+		self.outputformat = outputformat
 
 	def call(self, args):
 		try:
@@ -201,15 +239,30 @@ class EvalFunc:
 		except:
 			die("EvalFunc::call() failed func=" + self.string)
 
+	def getMutation(self):
+		return EvalFunc(getRandomPrimitiveFuncStr(self.inputformat, self.outputformat), self.inputformat, self.outputformat)
+
+	def copy(self):
+		return EvalFunc(self.string, self.inputformat, self.outputformat)
+
+	def toString(self):
+		return "eval(" + self.string + ")"
+
 def getRandomPrimitiveFuncStr(inputformat, outputtype, recursion=0.95):
-	outteroperator = random.choice(getOperators("any", outputtype))
+	operators = getOperators("any", outputtype)
+	if len(operators) == 0:
+		return ERRORDATA
+	outteroperator = random.choice(operators)
 	opstring = outteroperator[0]
 	opin = outteroperator[1]
 	opout = outteroperator[2]
 
 	if random.random() < recursion: # another step
 		while "$" in opstring:
-			opstring = opstring.replace("$", getRandomPrimitiveFuncStr("any", opin, recursion/2), 1)
+			funcstr = getRandomPrimitiveFuncStr("any", opin, recursion/2)
+			if funcstr == ERRORDATA:
+				return ERRORDATA
+			opstring = opstring.replace("$", funcstr, 1)
 	else: # insert real values
 		while "$" in opstring:
 			opstring = opstring.replace("$", getRandomPrimitiveValueStr(opin, inputformat), 1)
