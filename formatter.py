@@ -106,3 +106,46 @@ def validateFormat(format):
 
 	bracelist = list()
 	return True
+
+def getPermutations(format):
+	if format.startswith("{"):
+		l = list()
+		sections = splitSections(format)
+		for section in sections:
+			for permu in getPermutations(section):
+				l.append(permu)
+		return l
+	else:
+		stringy = 0
+		listy = 0
+		bracy = 0
+		spot = 0
+
+		for i in range(len(format)):
+			if stringy:
+				if format[i] == "'" or format[i] == '"':
+					stringy -= 1
+			elif listy:
+				if format[i] == "]":
+					listy -= 1
+			else:
+				if format[i] == "'" or format[i] == '"':
+					stringy += 1
+				elif format[i] == "[":
+					listy += 1
+				elif format[i] == '{':
+					if spot == 0:
+						spot = i
+					bracy += 1
+				elif format[i] == '}':
+					bracy -= 1
+					if bracy == 0:
+						l = list()
+						for permu in getPermutations(format[spot:i+1]):
+							l.append(format[:spot] + permu + format[i+1:])
+						ll = list()
+						for element in l:
+							for ele in getPermutations(element):
+								ll.append(ele)
+						return ll # sort out doubles pls
+		return [format]

@@ -118,10 +118,10 @@ class Idea:
 ERRORDATA="_ERRORDATA_"
 
 def getRandomFunc(inputformat, outputformat): # creates a Func, that converts data which matches inputdata to data which matches outputdata
-		if inputformat.startswith("{"):
-			return BraceFunc.getRandom(inputformat, outputformat)
-		if outputformat.startswith("{"):
-			return getRandomFunc(inputformat, random.choice(formatter.splitSections(outputformat)))
+		if "{" in inputformat:
+			return InputSwitchFunc.getRandom(inputformat, outputformat)
+		if "{" in outputformat:
+			return OutputSwitchFunc.getRandom(inputformat, outputformat)
 		if outputformat.startswith("("):
 			return ParenFunc.getRandom(inputformat, outputformat)
 		if outputformat.startswith("["):
@@ -139,7 +139,7 @@ def getRandomFunc(inputformat, outputformat): # creates a Func, that converts da
 			return EvalFunc("'" + outputformat[1:-1] + "'")
 		die("getRandomFunc(). dunno, what todo with outputformat=" + outputformat)
 
-class BraceFunc:
+class InputSwitchFunc: # has one func for every inputformat permutation
 	def __init__(self, inputformats, funcs):
 		self.inputformats = inputformats
 		self.funcs = funcs
@@ -153,8 +153,25 @@ class BraceFunc:
 
 	@staticmethod
 	def getRandom(inputformat, outputformat):
-		inputformats = formatter.splitSections(inputformat)
-		return BraceFunc(inputformats, [getRandomFunc(inputformats[i], outputformat) for i in range(len(inputformats))])
+		inputformats = formatter.getPermutations(inputformat)
+		return InputSwitchFunc(inputformats, [getRandomFunc(inputformats[i], outputformat) for i in range(len(inputformats))])
+
+class OutputSwitchFunc: # has one condition and func for every outputformat permutation
+	def __init__(self, outputformats, conditions, funcs):
+		self.outputformats = outputformats
+		self.conditions = conditions
+		self.funcs = funcs
+
+	def call(self, args):
+		for i in range(len(self.conditions)):
+			if self.conditions[i].call(args) == True:
+				return self.funcs[i].call(args)
+		return self.funcs[-1].call(args)
+
+	@staticmethod
+	def getRandom(inputformat, outputformat):
+		outputformats = formatter.getPermutations(outputformat)
+		return OutputSwitchFunc(outputformats, [getRandomFunc(inputformat, "bool") for x in range(len(outputformats)-1)], [getRandomFunc(inputformat, x) for x in outputformats])
 
 class ParenFunc:
 	def __init__(self, parts):
@@ -195,30 +212,33 @@ def getRandomPrimitiveFuncStr(inputformat, outputtype, recursion=0.95):
 			opstring = opstring.replace("$", getRandomPrimitiveFuncStr("any", opin, recursion/2), 1)
 	else: # insert real values
 		while "$" in opstring:
-			opstring = opstring.replace("$", getRandomPrimitiveValueStr(opin), 1)
+			opstring = opstring.replace("$", getRandomPrimitiveValueStr(opin, inputformat), 1)
 	return opstring
 
 def getRandomPrimitiveValueStr(type, format):
+	strSpots = getPrimitiveStrSpots(type, format)
 	if False and random.random() < 0.25: # there is a list to reduce from
 		# reduce
 		pass
-	elif random.random() < 0.5:
-		return random.choice(getPrimitiveStrSpots(type, format))
+	elif len(strSpots) > 0 and random.random() < 0.5:
+		return random.choice(strSpots)
 	else:
 		if type == "float":
 			x = random.random() * 35565 # optimize?
 			if random.random() < 0.2:
-				return -x
-			return x
+				return str(-x)
+			return str(x)
 		elif type == "int":
 			x = int(random.random() * 35565 * random.random()) # optimize?
 			if random.random() < 0.2:
-				return -x
-			return x
+				return str(-x)
+			return str(x)
 		elif type == "bool":
-			return random.random() < 0.5
+			return str(random.random() < 0.5)
 		elif type == "str":
 			return "very random generated string"
+		elif type == "any":
+			return getRandomPrimitiveValueStr(random.choice(['float', 'int', 'bool', 'str']), format)
 		die("getRandomPrimitiveValueStr(" + type + ", " + format + "): unknown type")
 
 def getPrimitiveStrSpots(type, format):
