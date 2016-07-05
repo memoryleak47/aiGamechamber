@@ -278,7 +278,7 @@ def getOperators(inputtype, outputtype):
 		("($<$)", "float", "bool"),
 		("($>$)", "float", "bool"),
 		("($==$)", "any", "bool"),
-		("not($)", "bool", "bool"),
+		("(not($))", "bool", "bool"),
 		("($)and($)", "bool", "bool"),
 		("($)or($)", "bool", "bool")
 	]
