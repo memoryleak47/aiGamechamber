@@ -236,7 +236,7 @@ def getRandomPrimitiveValueStr(type, format):
 		elif type == "bool":
 			return str(random.random() < 0.5)
 		elif type == "str":
-			return "very random generated string"
+			return "\"very random generated string\""
 		elif type == "any":
 			return getRandomPrimitiveValueStr(random.choice(['float', 'int', 'bool', 'str']), format)
 		die("getRandomPrimitiveValueStr(" + type + ", " + format + "): unknown type")
