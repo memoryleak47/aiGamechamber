@@ -123,7 +123,7 @@ def getRandomFunc(inputformat, outputformat): # creates a Func, that converts da
 		if "{" in outputformat:
 			return OutputSwitchFunc.getRandom(inputformat, outputformat)
 		if outputformat.startswith("("):
-			return ParenFunc.getRandom(inputformat, outputformat)
+			return TupleFunc.getRandom(inputformat, outputformat)
 		if outputformat.startswith("["):
 			die("no lists yet")
 			return ERRORDATA
@@ -196,7 +196,7 @@ class OutputSwitchFunc: # has one condition and func for every outputformat perm
 		outputformats = formatter.getPermutations(outputformat)
 		return OutputSwitchFunc(outputformats, [getRandomFunc(inputformat, "bool") for x in range(len(outputformats)-1)], [getRandomFunc(inputformat, x) for x in outputformats])
 
-class ParenFunc:
+class TupleFunc:
 	def __init__(self, parts):
 		self.parts = parts
 
@@ -210,10 +210,10 @@ class ParenFunc:
 		parts = self.parts.copy()
 		i = random.choice(range(len(parts)))
 		parts[i] = parts[i].getMutation()
-		return ParenFunc(parts)
+		return TupleFunc(parts)
 
 	def copy(self):
-		return ParenFunc(self.parts.copy())
+		return TupleFunc(self.parts.copy())
 
 	def toString(self):
 		return "paren(" + ", ".join([x.toString() for x in self.parts]) + ")"
@@ -224,7 +224,7 @@ class ParenFunc:
 		outputformats = formatter.splitSections(outputformat)
 		for format in outputformats:
 			parts.append(getRandomFunc(inputformat, format))
-		return ParenFunc(parts)
+		return TupleFunc(parts)
 
 class EvalFunc:
 	def __init__(self, string, inputformat, outputformat):
