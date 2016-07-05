@@ -111,7 +111,7 @@ class Idea:
 		self.highestSuccess = max(self.success, self.highestSuccess)
 
 	def getMutation(self):
-		return self.func.getMutation()
+		return Idea(self.func.getMutation(), self.inputformat, self.outputformat)
 
 # func
 
@@ -217,7 +217,6 @@ class ParenFunc:
 
 	def toString(self):
 		return "paren(" + ", ".join([x.toString() for x in self.parts]) + ")"
-		return str(evals)
 
 	@staticmethod
 	def getRandom(inputformat, outputformat):
@@ -240,7 +239,7 @@ class EvalFunc:
 			die("EvalFunc::call() failed func=" + self.string)
 
 	def getMutation(self):
-		return EvalFunc(getRandomPrimitiveFuncStr(self.inputformat, self.outputformat), self.inputformat, self.outputformat)
+		return getRandomFunc(self.inputformat, self.outputformat) # TODO correct?
 
 	def copy(self):
 		return EvalFunc(self.string, self.inputformat, self.outputformat)
@@ -251,7 +250,7 @@ class EvalFunc:
 def getRandomPrimitiveFuncStr(inputformat, outputtype, recursion=0.95):
 	operators = getOperators("any", outputtype)
 	if len(operators) == 0:
-		return ERRORDATA
+		return getRandomPrimitiveValueStr(outputtype, inputformat)
 	outteroperator = random.choice(operators)
 	opstring = outteroperator[0]
 	opin = outteroperator[1]
