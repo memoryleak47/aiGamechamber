@@ -116,6 +116,7 @@ class Idea:
 # func
 
 ERRORDATA="_ERRORDATA_"
+PRIMITIVE_TYPES = ['float', 'int', 'bool', 'str']
 
 def getRandomFunc(inputformat, outputformat): # creates a Func, that converts data which matches inputdata to data which matches outputdata
 		if "{" in inputformat:
@@ -296,7 +297,7 @@ def getRandomPrimitiveValueStr(type, format):
 		elif type == "str":
 			return "\"very random generated string\""
 		elif type == "any":
-			return getRandomPrimitiveValueStr(random.choice(['float', 'int', 'bool', 'str']), format)
+			return getRandomPrimitiveValueStr(random.choice(PRIMITIVE_TYPES), format)
 		die("getRandomPrimitiveValueStr(" + type + ", " + format + "): unknown type")
 
 def getPrimitiveStrSpots(type, format):
@@ -309,39 +310,59 @@ def getPrimitiveStrSpots(type, format):
 
 	spots = list()
 	counter = list()
-	for i in range(len(format)):
+	i = 0
+	while i < len(format):
 		if format[i] == "(":
 			counter.append("0")
+			i += 1
 		elif format[i] == ")":
 			counter = counter[:-1]
+			i += 1
 		elif format[i] == ",":
 			tmp = counter[-1]
 			counter = counter[:-1]
 			counter.append(str(int(tmp)+1))
-		elif format[i:].startswith(type):
-			tmp = "args[" + ']['.join(counter) + "]"
-			if tmp == "args[]":
-				tmp = "args"
-			spots.append(tmp)
+			i += 1
+		else:
+			f = format[i:]
+			commaspot = f.find(",")
+			if commaspot != -1:
+				f = f[:commaspot]
+			parenspot = f.find(")")
+			if parenspot != -1:
+				f = f[:parenspot]
+			if typeContains(type, f):
+				tmp = "args[" + ']['.join(counter) + "]"
+				if tmp == "args[]":
+					tmp = "args"
+				spots.append(tmp)
+			if commaspot == -1:
+				break
+			else:
+				i += commaspot
 	return spots
 
 def getOperators(inputtype, outputtype):
 	ops = [
-		("($+$)", "float", "float"),
-		("($-$)", "float", "float"),
-		("($*$)", "float", "float"),
 		("($/$)", "float", "float"),
-		("min($,$)", "float", "float"),
-		("max($,$)", "float", "float"),
-		("($<$)", "float", "bool"),
-		("($>$)", "float", "bool"),
+		("($+$)", "int", "int"),
+		("($-$)", "int", "int"),
+		("($*$)", "int", "int"),
+		("min($,$)", "int", "int"),
+		("max($,$)", "int", "int"),
+		("($<$)", "int", "bool"),
+		("($>$)", "int", "bool"),
 		("($==$)", "any", "bool"),
 		("(not($))", "bool", "bool"),
 		("($)and($)", "bool", "bool"),
-		("($)or($)", "bool", "bool")
+		("($)or($)", "bool", "bool"),
+		("int($)", "float", "int")
 	]
 	result = list()
 	for op in ops:
-		if (op[1] == "any" or inputtype == "any" or op[1] == inputtype) and (op[2] == "any" or outputtype == "any" or op[2] == outputtype):
+		if typeContains(inputtype, op[1]) and typeContains(outputtype, op[2]):
 			result.append(op)
 	return result
+
+def typeContains(a, b):
+	return (a == "any" or a == b or (a == "float" and b == "int"))
