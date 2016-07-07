@@ -243,7 +243,8 @@ class EvalFunc:
 		try:
 			return eval(self.string)
 		except:
-			die("EvalFunc::call() failed func=" + self.string)
+			print("EvalFunc::call() failed func=" + self.string)
+			return ERRORDATA
 
 	def getMutation(self):
 		return getRandomFunc(self.inputformat, self.outputformat) # TODO correct?

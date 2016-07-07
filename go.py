@@ -11,12 +11,13 @@ sys.path.append(sys.path[0] + "/players")
 import rectgame
 import doublerectgame
 import together
+import dodge
+import sniper
 
 import human
 import functryhard 
 import algotryhard 
 import kingofrandom
-import dodge
 
 # <changeable>
 SLEEPTIME = 50
@@ -41,7 +42,8 @@ def main():
 	window.maxsize(800, 600)
 	# <changeable>
 		#game = dodge.Dodge(2, window)
-	game = rectgame.Rectgame(2, window)
+		#game = rectgame.Rectgame(2, window)
+	game = sniper.Sniper(2, window)
 	players = [functryhard.FuncTryhard(game, 0), functryhard.FuncTryhard(game, 1)]
 		#players = [kingofrandom.KingOfRandom(game, 0), kingofrandom.KingOfRandom(game, 1)]
 	# </changeable>
