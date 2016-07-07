@@ -285,12 +285,12 @@ def getRandomPrimitiveValueStr(type, format):
 		return random.choice(strSpots)
 	else:
 		if type == "float":
-			x = random.random() * 35565 # optimize?
+			x = random.random() * 35565 * random.random() * random.random() * random.random() # optimize?
 			if random.random() < 0.2:
 				return str(-x)
 			return str(x)
 		elif type == "int":
-			x = int(random.random() * 35565 * random.random()) # optimize?
+			x = int(random.random() * 35565 * random.random() * random.random() * random.random()) # optimize?
 			if random.random() < 0.2:
 				return str(-x)
 			return str(x)
