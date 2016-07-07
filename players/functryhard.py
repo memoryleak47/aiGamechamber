@@ -99,7 +99,7 @@ class Idea:
 		return Idea(getRandomFunc(inputformat, outputformat), inputformat, outputformat)
 
 	def toString(self):
-		return "success= " + str(self.success)
+		return "success= " + str(self.success) + "\n" + self.func.toString()
 
 	def call(self, data):
 		return self.func.call(data)
@@ -160,6 +160,9 @@ class InputSwitchFunc: # has one func for every inputformat permutation
 	def copy(self):
 		return InputSwitchFunc(self.inputformats.copy(), [x.copy() for x in self.funcs])
 
+	def toString(self):
+		return "InputSwitchFunc(\n" + ["\t" + x.toString() + "\n" for x in self.funcs] + "\n)\n"
+
 	@staticmethod
 	def getRandom(inputformat, outputformat):
 		inputformats = formatter.getPermutations(inputformat)
@@ -191,6 +194,9 @@ class OutputSwitchFunc: # has one condition and func for every outputformat perm
 	def copy(self):
 		return OutputSwitchFunc(self.outputformats.copy(), [x.copy() for x in self.conditions], [x.copy() for x in self.funcs])
 
+	def toString(self):
+		return "OutputSwitchFunc(\n" + "".join(["\t" + self.conditions[i].toString() + ":\n\t\t" + self.funcs[i].toString() for i in range(len(self.conditions))]) + "\t" + self.funcs[-1].toString() + "\n)\n"
+
 	@staticmethod
 	def getRandom(inputformat, outputformat):
 		outputformats = formatter.getPermutations(outputformat)
@@ -216,7 +222,7 @@ class TupleFunc:
 		return TupleFunc(self.parts.copy())
 
 	def toString(self):
-		return "paren(" + ", ".join([x.toString() for x in self.parts]) + ")"
+		return "TupleFunc(" + ", ".join([x.toString() for x in self.parts]) + ")"
 
 	@staticmethod
 	def getRandom(inputformat, outputformat):
@@ -245,7 +251,7 @@ class EvalFunc:
 		return EvalFunc(self.string, self.inputformat, self.outputformat)
 
 	def toString(self):
-		return "eval(" + self.string + ")"
+		return "EvalFunc(" + self.string + ")"
 
 def getRandomPrimitiveFuncStr(inputformat, outputtype, recursion=0.95):
 	operators = getOperators("any", outputtype)
