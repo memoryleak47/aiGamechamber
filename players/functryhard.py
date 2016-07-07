@@ -43,6 +43,7 @@ class FuncTryhard(Player):
 		if (self.__idea != None) and (self.__idea not in self.__favs) and (self.__idea.highestSuccess >= FAVSUCCESS):
 			self.__addToFavs(self.__idea)
 		self.__idea = self.__getNewIdea()
+		print(self.__idea.toString())
 		self.__ideaStartTime = self._game.getTime()
 
 	def __isStuck(self):
@@ -196,7 +197,7 @@ class OutputSwitchFunc: # has one condition and func for every outputformat perm
 		return OutputSwitchFunc(self.outputformats.copy(), [x.copy() for x in self.conditions], [x.copy() for x in self.funcs])
 
 	def toString(self):
-		return "OutputSwitchFunc(\n" + "\n".join(["\t" + self.conditions[i].toString() + ":\n\t\t" + self.funcs[i].toString() for i in range(len(self.conditions))]) + "\t" + self.funcs[-1].toString() + "\n)\n"
+		return "OutputSwitchFunc(\n" + "\n".join(["\t" + self.conditions[i].toString() + ":\n\t\t" + self.funcs[i].toString() for i in range(len(self.conditions))]) + "\n\t" + self.funcs[-1].toString() + "\n)\n"
 
 	@staticmethod
 	def getRandom(inputformat, outputformat):

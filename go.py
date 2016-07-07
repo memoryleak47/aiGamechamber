@@ -41,11 +41,8 @@ def main():
 	window.minsize(800, 600)
 	window.maxsize(800, 600)
 	# <changeable>
-		#game = dodge.Dodge(2, window)
-		#game = rectgame.Rectgame(2, window)
-	game = sniper.Sniper(2, window)
+	game = rectgame.Rectgame(2, window)
 	players = [functryhard.FuncTryhard(game, 0), functryhard.FuncTryhard(game, 1)]
-		#players = [kingofrandom.KingOfRandom(game, 0), kingofrandom.KingOfRandom(game, 1)]
 	# </changeable>
 
 	game.start(players)
