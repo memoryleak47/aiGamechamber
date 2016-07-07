@@ -18,6 +18,7 @@ import human
 import functryhard 
 import algotryhard 
 import kingofrandom
+import memorizer
 
 # <changeable>
 SLEEPTIME = 50

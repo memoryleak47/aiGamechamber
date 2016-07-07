@@ -43,7 +43,6 @@ class FuncTryhard(Player):
 		if (self.__idea != None) and (self.__idea not in self.__favs) and (self.__idea.highestSuccess >= FAVSUCCESS):
 			self.__addToFavs(self.__idea)
 		self.__idea = self.__getNewIdea()
-		print(self.__idea.toString())
 		self.__ideaStartTime = self._game.getTime()
 
 	def __isStuck(self):
