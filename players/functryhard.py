@@ -195,7 +195,7 @@ class OutputSwitchFunc: # has one condition and func for every outputformat perm
 		return OutputSwitchFunc(self.outputformats.copy(), [x.copy() for x in self.conditions], [x.copy() for x in self.funcs])
 
 	def toString(self):
-		return "OutputSwitchFunc(\n" + "".join(["\t" + self.conditions[i].toString() + ":\n\t\t" + self.funcs[i].toString() for i in range(len(self.conditions))]) + "\t" + self.funcs[-1].toString() + "\n)\n"
+		return "OutputSwitchFunc(\n" + "\n".join(["\t" + self.conditions[i].toString() + ":\n\t\t" + self.funcs[i].toString() for i in range(len(self.conditions))]) + "\t" + self.funcs[-1].toString() + "\n)\n"
 
 	@staticmethod
 	def getRandom(inputformat, outputformat):
@@ -264,7 +264,7 @@ def getRandomPrimitiveFuncStr(inputformat, outputtype, recursion=0.95):
 
 	if random.random() < recursion: # another step
 		while "$" in opstring:
-			funcstr = getRandomPrimitiveFuncStr("any", opin, recursion/2)
+			funcstr = getRandomPrimitiveFuncStr(inputformat, opin, recursion/2)
 			if funcstr == ERRORDATA:
 				return ERRORDATA
 			opstring = opstring.replace("$", funcstr, 1)
@@ -278,7 +278,7 @@ def getRandomPrimitiveValueStr(type, format):
 	if False and random.random() < 0.25: # there is a list to reduce from
 		# reduce
 		pass
-	elif len(strSpots) > 0 and random.random() < 0.5:
+	elif len(strSpots) > 0 and random.random() < 0.8:
 		return random.choice(strSpots)
 	else:
 		if type == "float":
