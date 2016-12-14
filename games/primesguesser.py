@@ -17,16 +17,22 @@ class Primesguesser(Game):
 
 	def applyAction(self, action, playerID):
 		if playerID == 0:
-			self._setData(self.getData()+1)
+			self._setData(random.randint(2, random.randint(2, random.randint(2, random.randint(2, random.randint(2, 200000000))))))
 
-		prime = self.__isPrime(self.getData())
-		print(str(prime) + " == " + str(action))
-		if prime == (action == "prime"):
-			print("prime guess " + str(self.getData()) + " was correct:")
-			self._evaluatePlayer(playerID, 10)
+		if self.__isPrime(self.getData()):
+			if action == "prime":
+				print("NICE ONE, " + str(self.getData()) + " is a prime")
+				self._evaluatePlayer(playerID, 100)
+			else:
+				print("NOPE!? " + str(self.getData()) + " is no prime")
+				self._evaluatePlayer(playerID, -200)
 		else:
-			print("prime guess " + str(self.getData()) + " was wrong:")
-			self._evaluatePlayer(playerID, -60)
+			if action == "prime":
+				print("nope " + str(self.getData()) + " is no prime")
+				self._evaluatePlayer(playerID, -30)
+			else:
+				print("easy, " + str(self.getData()) + " is a prime")
+				self._evaluatePlayer(playerID, 1)
 		print("\n\n")
 
 	def render(self):
