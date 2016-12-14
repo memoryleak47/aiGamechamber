@@ -16,15 +16,18 @@ class Primesguesser(Game):
 	def _restart(self): pass
 
 	def applyAction(self, action, playerID):
-		self._setData(self.getData()+1)
+		if playerID == 0:
+			self._setData(self.getData()+1)
 
 		prime = self.__isPrime(self.getData())
-		if prime == (action[0] == "prime"):
-			self._evaluatePlayer(playerID, 3)
-			print("prime guess " + str(self.getData()) + " was correct")
+		print(str(prime) + " == " + str(action))
+		if prime == (action == "prime"):
+			print("prime guess " + str(self.getData()) + " was correct:")
+			self._evaluatePlayer(playerID, 10)
 		else:
-			self._evaluatePlayer(playerID, -1)
-			print("prime guess " + str(self.getData()) + " was wrong")
+			print("prime guess " + str(self.getData()) + " was wrong:")
+			self._evaluatePlayer(playerID, -60)
+		print("\n\n")
 
 	def render(self):
 		pass

@@ -35,6 +35,7 @@ class FuncTryhard(Player):
 
 	def evaluate(self, value):
 		self.__idea.evaluate(value)
+		print(self.__idea.toString())
 		#   if you surrender OR you get bad evals and don't do anything
 		if (self.__idea.success <= SURRENDERSUCCESS) or (value <= 0 and self.__isStuck()):
 			self.__updateIdea()
