@@ -13,6 +13,7 @@ import doublerectgame
 import together
 import dodge
 import sniper
+import primesguesser
 
 import human
 import functryhard 
@@ -42,7 +43,7 @@ def main():
 	window.minsize(800, 600)
 	window.maxsize(800, 600)
 	# <changeable>
-	game = rectgame.Rectgame(2, window)
+	game = primesguesser.Primesguesser(2)
 	players = [functryhard.FuncTryhard(game, 0), functryhard.FuncTryhard(game, 1)]
 	# </changeable>
 

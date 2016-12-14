@@ -243,7 +243,7 @@ class EvalFunc:
 		try:
 			return eval(self.string)
 		except:
-			print("EvalFunc::call() failed func=" + self.string)
+			print("EvalFunc::call() failed func=" + self.string + " with args=" + str(args))
 			return ERRORDATA
 
 	def getMutation(self):

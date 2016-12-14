@@ -38,7 +38,10 @@ class Game:
 		return self.__history.copy()
 
 	def getData(self):
-		return self.__data.copy()
+		if type(self.__data) in (int, float, str):
+			return self.__data
+		else:
+			return self.__data.copy()
 
 	def _setData(self, data):
 		self.__data = data
